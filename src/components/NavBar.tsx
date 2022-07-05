@@ -46,26 +46,33 @@ const ResponsiveAppBar = (props: { currentUser: User | null }) => {
                             letterSpacing: ".3rem",
                             color: "inherit",
                             textDecoration: "none",
+                            flexGrow: props.currentUser ? 0 : 1,
                         }}
                     >
                         Audinote
                     </Typography>
-                    <Box
-                        sx={{
-                            flexGrow: 1,
-                            display: { md: "flex" },
-                        }}
-                    >
-                        {pages.map((page) => (
-                            <Button
-                                key={page}
-                                href={`/${page}`}
-                                sx={{ my: 2, color: "white", display: "block" }}
-                            >
-                                {page}
-                            </Button>
-                        ))}
-                    </Box>
+                    {props.currentUser ? (
+                        <Box
+                            sx={{
+                                flexGrow: 1,
+                                display: { md: "flex" },
+                            }}
+                        >
+                            {pages.map((page) => (
+                                <Button
+                                    key={page}
+                                    href={`/${page}`}
+                                    sx={{
+                                        my: 2,
+                                        color: "white",
+                                        display: "block",
+                                    }}
+                                >
+                                    {page}
+                                </Button>
+                            ))}
+                        </Box>
+                    ) : null}
                     {props.currentUser ? (
                         <Box sx={{ flexGrow: 0 }}>
                             <Tooltip title="Account settings">
