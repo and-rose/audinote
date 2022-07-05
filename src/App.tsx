@@ -8,6 +8,7 @@ import Home from "./pages/MainApp";
 import Register from "./pages/Register";
 import Landing from "./pages/Landing";
 import ProtectedRoute from "./pages/PrivateRouter";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 const defaultTheme = createTheme({
     palette: {
@@ -19,56 +20,55 @@ const defaultTheme = createTheme({
 
 function App() {
     const auth = getAuth();
-    const [user, setUser] = useState<User | null>(null);
 
-    useEffect(() => {
-        onAuthStateChanged(auth, (user) => {
-            setUser(user);
-        });
-    });
+    const [user, loading, error] = useAuthState(auth);
 
     return (
         <ThemeProvider theme={defaultTheme}>
             <BrowserRouter>
-                <Routes>
-                    <Route
-                        path={"/"}
-                        element={
-                            <ProtectedRoute user={user}>
-                                <NavBar currentUser={user} />
-                                <Home />
-                            </ProtectedRoute>
-                        }
-                    />
-                    <Route
-                        path={"/Home"}
-                        element={
-                            <ProtectedRoute user={user}>
-                                <NavBar currentUser={user} />
-                                <Home />
-                            </ProtectedRoute>
-                        }
-                    />
-                    <Route path="/Landing" element={<Landing />} />
-                    <Route
-                        path="/Login"
-                        element={
-                            <>
-                                <NavBar currentUser={user} />
-                                <Login />
-                            </>
-                        }
-                    />
-                    <Route
-                        path="/Register"
-                        element={
-                            <>
-                                <NavBar currentUser={user} />
-                                <Register />
-                            </>
-                        }
-                    />
-                </Routes>
+                {loading ? (
+                    <div>Loading...</div>
+                ) : (
+                    <Routes>
+                        <Route
+                            path={"/"}
+                            element={
+                                <ProtectedRoute user={user}>
+                                    <NavBar currentUser={user} />
+                                    <Home />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path={"/Home"}
+                            element={
+                                <ProtectedRoute user={user}>
+                                    <NavBar currentUser={user} />
+                                    <Home />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route path="/Landing" element={<Landing />} />
+                        <Route
+                            path="/Login"
+                            element={
+                                <>
+                                    <NavBar currentUser={user} />
+                                    <Login />
+                                </>
+                            }
+                        />
+                        <Route
+                            path="/Register"
+                            element={
+                                <>
+                                    <NavBar currentUser={user} />
+                                    <Register />
+                                </>
+                            }
+                        />
+                    </Routes>
+                )}
             </BrowserRouter>
         </ThemeProvider>
     );

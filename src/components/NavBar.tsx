@@ -15,7 +15,7 @@ import { useNavigate } from "react-router-dom";
 
 const pages = ["Home", "Collection"];
 
-const ResponsiveAppBar = (props: { currentUser: User | null }) => {
+const ResponsiveAppBar = (props: { currentUser: User | null | undefined }) => {
     const navigate = useNavigate();
     const auth = getAuth();
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
