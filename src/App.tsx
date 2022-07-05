@@ -48,7 +48,10 @@ function App() {
                                 </ProtectedRoute>
                             }
                         />
-                        <Route path="/Landing" element={<Landing />} />
+                        <Route
+                            path="/Landing"
+                            element={<Landing user={user} />}
+                        />
                         <Route
                             path="/Login"
                             element={

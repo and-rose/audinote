@@ -8,11 +8,7 @@ import React from "react";
 import { Navigate } from "react-router-dom";
 
 const ProtectedRoute = (props: { user: User | null | undefined; children }) => {
-    if (!props.user) {
-        return <Navigate to="/Landing" replace />;
-    }
-
-    return props.children;
+    return props.user ? props.children : <Navigate to="/Landing" replace />;
 };
 
 export default ProtectedRoute;

@@ -1,14 +1,13 @@
 import Box from "@mui/material/Box";
-import useTheme from "@mui/material/styles/useTheme";
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import Typography from "@mui/material/Typography";
 import React from "react";
-import Container from "@mui/material/Container";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
-import { Grid } from "@mui/material";
+import { User } from "@firebase/auth";
 
-const Landing = () => {
+const Landing = (props: { user: User | null | undefined }) => {
     return (
         <Box display="flex">
             <Box
@@ -46,29 +45,41 @@ const Landing = () => {
                 alignItems="center"
                 justifyContent="center"
             >
-                <Stack
-                    direction={"row"}
-                    justifyContent="center"
-                    alignItems="center"
-                    spacing={5}
-                >
+                {!props.user ? (
+                    <Stack
+                        direction={"row"}
+                        justifyContent="center"
+                        alignItems="center"
+                        spacing={5}
+                    >
+                        <Button
+                            href={"/Login"}
+                            variant={"contained"}
+                            size={"large"}
+                            sx={{ my: 2 }}
+                        >
+                            Login
+                        </Button>
+                        <Button
+                            href={"/Register"}
+                            variant={"contained"}
+                            size={"large"}
+                            sx={{ my: 2 }}
+                        >
+                            Sign Up
+                        </Button>
+                    </Stack>
+                ) : (
                     <Button
-                        href={"/Login"}
+                        href={"/Home"}
                         variant={"contained"}
                         size={"large"}
-                        sx={{ my: 2, display: "block" }}
+                        sx={{ my: 2 }}
+                        endIcon={<ArrowForwardIcon />}
                     >
-                        Login
+                        Go to app
                     </Button>
-                    <Button
-                        href={"/Register"}
-                        variant={"contained"}
-                        size={"large"}
-                        sx={{ my: 2, display: "block" }}
-                    >
-                        Sign Up
-                    </Button>
-                </Stack>
+                )}
             </Box>
         </Box>
     );

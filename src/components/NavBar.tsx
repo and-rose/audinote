@@ -12,6 +12,10 @@ import Tooltip from "@mui/material/Tooltip";
 import { getAuth, User, signOut } from "firebase/auth";
 import StringAvatar from "./StringAvatar";
 import { useNavigate } from "react-router-dom";
+import ListItemText from "@mui/material/ListItemText";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import LogoutIcon from "@mui/icons-material/Logout";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 const pages = ["Home", "Collection"];
 
@@ -90,20 +94,47 @@ const ResponsiveAppBar = (props: { currentUser: User | null | undefined }) => {
                                 anchorEl={anchorEl}
                                 open={open}
                                 onClose={handleClose}
-                                anchorOrigin={{
-                                    vertical: "bottom",
-                                    horizontal: "right",
+                                PaperProps={{
+                                    elevation: 0,
+                                    sx: {
+                                        overflow: "visible",
+                                        filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+                                        mt: 1.5,
+                                        "& .MuiAvatar-root": {
+                                            width: 32,
+                                            height: 32,
+                                            ml: -0.5,
+                                            mr: 1,
+                                        },
+                                        "&:before": {
+                                            content: '""',
+                                            display: "block",
+                                            position: "absolute",
+                                            top: 0,
+                                            right: 14,
+                                            width: 10,
+                                            height: 10,
+                                            bgcolor: "background.paper",
+                                            transform:
+                                                "translateY(-50%) rotate(45deg)",
+                                            zIndex: 0,
+                                        },
+                                    },
                                 }}
                                 transformOrigin={{
+                                    horizontal: "right",
                                     vertical: "top",
-                                    horizontal: "left",
+                                }}
+                                anchorOrigin={{
+                                    horizontal: "right",
+                                    vertical: "bottom",
                                 }}
                             >
                                 <MenuItem onClick={handleClose}>
-                                    Profile
-                                </MenuItem>
-                                <MenuItem onClick={handleClose}>
-                                    My account
+                                    <ListItemIcon>
+                                        <AccountCircleIcon />
+                                    </ListItemIcon>
+                                    <ListItemText>Profile</ListItemText>
                                 </MenuItem>
                                 <MenuItem
                                     onClick={() => {
@@ -118,7 +149,10 @@ const ResponsiveAppBar = (props: { currentUser: User | null | undefined }) => {
                                         handleClose();
                                     }}
                                 >
-                                    Logout
+                                    <ListItemIcon>
+                                        <LogoutIcon />
+                                    </ListItemIcon>
+                                    <ListItemText>Logout</ListItemText>
                                 </MenuItem>
                             </Menu>
                         </Box>
