@@ -1,8 +1,6 @@
 import React, { Fragment, useState, useEffect, useRef } from "react";
 import WaveSurfer from "wavesurfer.js";
-import CursorPlugin from "wavesurfer.js/src/plugin/cursor/index.js";
 import MarkersPlugin from "wavesurfer.js/src/plugin/markers/index.js";
-import RegionsPlugin from "wavesurfer.js/src/plugin/regions/index.js";
 import { AudioComment, TaskComment, toShortTimeStamp } from "../Helpers";
 import "./AudioPlayer.sass";
 import useTheme from "@mui/material/styles/useTheme";
@@ -76,8 +74,6 @@ export const AudioPlayer = (props: {
                             },
                         ],
                     }),
-                    CursorPlugin.create(),
-                    RegionsPlugin.create(),
                 ],
                 progressColor: theme.palette.primary.main,
                 waveColor: theme.palette.grey[500],

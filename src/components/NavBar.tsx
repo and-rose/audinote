@@ -11,10 +11,12 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import { getAuth, User, signOut } from "firebase/auth";
 import StringAvatar from "./StringAvatar";
+import { useNavigate } from "react-router-dom";
 
 const pages = ["Home", "Collection"];
 
 const ResponsiveAppBar = (props: { currentUser: User | null }) => {
+    const navigate = useNavigate();
     const auth = getAuth();
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
@@ -34,7 +36,7 @@ const ResponsiveAppBar = (props: { currentUser: User | null }) => {
                         variant="h6"
                         noWrap
                         component="a"
-                        href="/"
+                        href="/Landing"
                         sx={{
                             mr: 5,
                             display: { xs: "none", md: "flex" },
@@ -101,7 +103,7 @@ const ResponsiveAppBar = (props: { currentUser: User | null }) => {
                                         signOut(auth)
                                             .then(() => {
                                                 // Sign-out successful.
-                                                console.log("signed out");
+                                                navigate("/Landing");
                                             })
                                             .catch((error) => {
                                                 // An error happened.

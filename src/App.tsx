@@ -7,6 +7,7 @@ import Login from "./pages/Login";
 import Home from "./pages/MainApp";
 import Register from "./pages/Register";
 import Landing from "./pages/Landing";
+import ProtectedRoute from "./pages/PrivateRouter";
 
 const defaultTheme = createTheme({
     palette: {
@@ -29,13 +30,44 @@ function App() {
     return (
         <ThemeProvider theme={defaultTheme}>
             <BrowserRouter>
-                <NavBar currentUser={user} />
                 <Routes>
-                    <Route path={"/"} element={<Home />} />
-                    <Route path={"/Home"} element={<Home />} />
+                    <Route
+                        path={"/"}
+                        element={
+                            <ProtectedRoute user={user}>
+                                <NavBar currentUser={user} />
+                                <Home />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path={"/Home"}
+                        element={
+                            <ProtectedRoute user={user}>
+                                <NavBar currentUser={user} />
+                                <Home />
+                            </ProtectedRoute>
+                        }
+                    />
                     <Route path="/Landing" element={<Landing />} />
-                    <Route path="/Login" element={<Login />} />
-                    <Route path="/Register" element={<Register />} />
+                    <Route
+                        path="/Login"
+                        element={
+                            <>
+                                <NavBar currentUser={user} />
+                                <Login />
+                            </>
+                        }
+                    />
+                    <Route
+                        path="/Register"
+                        element={
+                            <>
+                                <NavBar currentUser={user} />
+                                <Register />
+                            </>
+                        }
+                    />
                 </Routes>
             </BrowserRouter>
         </ThemeProvider>
