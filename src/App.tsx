@@ -1,26 +1,44 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { onAuthStateChanged, getAuth, User } from "firebase/auth";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import NavBar from "./components/NavBar";
+import Login from "./pages/Login";
+import Home from "./pages/MainApp";
+import Register from "./pages/Register";
+import Landing from "./pages/Landing";
+
+const defaultTheme = createTheme({
+    palette: {
+        background: {
+            default: "#f5f5f5",
+        },
+    },
+});
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+    const auth = getAuth();
+    const [user, setUser] = useState<User | null>(null);
 
+    useEffect(() => {
+        onAuthStateChanged(auth, (user) => {
+            setUser(user);
+        });
+    });
+
+    return (
+        <ThemeProvider theme={defaultTheme}>
+            <BrowserRouter>
+                <NavBar currentUser={user} />
+                <Routes>
+                    <Route path={"/"} element={<Home />} />
+                    <Route path={"/Home"} element={<Home />} />
+                    <Route path="/Landing" element={<Landing />} />
+                    <Route path="/Login" element={<Login />} />
+                    <Route path="/Register" element={<Register />} />
+                </Routes>
+            </BrowserRouter>
+        </ThemeProvider>
+    );
+}
 export default App;
