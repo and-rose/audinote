@@ -1,5 +1,5 @@
 import MenuItem from "@mui/material/MenuItem";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AudioComment } from "../Helpers";
 import { AudioCommentTile } from "./AudioComment";
 import "./AudioCommentList.sass";
@@ -22,7 +22,8 @@ import Menu from "@mui/material/Menu";
 import Sort from "@mui/icons-material/Sort";
 import { TransitionGroup } from "react-transition-group";
 import Collapse from "@mui/material/Collapse";
-import { AudioCommentSortType } from "../pages/MainApp";
+
+type AudioCommentSortType = "dateTime" | "timePosition";
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
     props,
@@ -43,8 +44,6 @@ const Transition = React.forwardRef(function Transition(
 export const AudioCommentList = (props: {
     comments: AudioComment[];
     updateComments: (comment: AudioComment[]) => void;
-    updateSortBy: (sortValue: AudioCommentSortType | string) => void;
-    sortByType: AudioCommentSortType | string;
 }) => {
     //Confirmation Dialog Handlers
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -59,6 +58,7 @@ export const AudioCommentList = (props: {
     const [selectedCommentIndex, setSelectedCommentIndex] = useState(0);
     const [selectedComment, setSelectedComment] = useState<AudioComment>();
     const [dialogOpen, setDialogOpen] = useState(false);
+    const [sortBy, setSortBy] = useState<AudioCommentSortType>();
     const handleDialogOpen = () => setDialogOpen(true);
     const handleDialogClose = () => setDialogOpen(false);
 
@@ -72,6 +72,7 @@ export const AudioCommentList = (props: {
     };
 
     function openDeleteDialog(targetIndex: number) {
+        console.log(targetIndex);
         setSelectedCommentIndex(targetIndex);
         setSelectedComment(props.comments[selectedCommentIndex]);
         handleDialogOpen();
@@ -115,11 +116,37 @@ export const AudioCommentList = (props: {
                         "aria-labelledby": "fade-button",
                     }}
                     TransitionComponent={Fade}
+                    PaperProps={{
+                        elevation: 0,
+                        sx: {
+                            overflow: "visible",
+                            filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+                            mt: 1.5,
+                            "& .MuiAvatar-root": {
+                                width: 32,
+                                height: 32,
+                                ml: -0.5,
+                                mr: 1,
+                            },
+                            "&:before": {
+                                content: '""',
+                                display: "block",
+                                position: "absolute",
+                                top: 0,
+                                right: 14,
+                                width: 10,
+                                height: 10,
+                                bgcolor: "background.paper",
+                                transform: "translateY(-50%) rotate(45deg)",
+                                zIndex: 0,
+                            },
+                        },
+                    }}
                 >
                     <MenuItem
                         value={"dateTime"}
                         onClick={() => {
-                            props.updateSortBy("dateTime");
+                            setSortBy("dateTime");
                             handleClose();
                         }}
                     >
@@ -131,7 +158,7 @@ export const AudioCommentList = (props: {
                     <MenuItem
                         value={"timePosition"}
                         onClick={() => {
-                            props.updateSortBy("timePosition");
+                            setSortBy("timePosition");
                             handleClose();
                         }}
                     >
@@ -145,24 +172,36 @@ export const AudioCommentList = (props: {
 
             {/* Return Audio Tiles*/}
             <TransitionGroup>
-                {props.comments.map((comment, index) => {
-                    return (
-                        <Collapse
-                            key={index}
-                            className="commentListContainer"
-                            timeout={200}
-                        >
-                            <AudioCommentTile
-                                commentDetails={comment}
-                                key={comment.dateTime.getTime()}
-                                listKey={index}
-                                addCommentToArray={updateComment}
-                                deleteCommentFromArray={deleteComment}
-                                openDeleteDialog={openDeleteDialog}
-                            />
-                        </Collapse>
-                    );
-                })}
+                {props.comments
+                    // .sort((a, b) => {
+                    //     if (sortBy === "dateTime") {
+                    //         return a.dateTime.getTime() > b.dateTime.getTime()
+                    //             ? 1
+                    //             : -1;
+                    //     } else if (sortBy === "timePosition") {
+                    //         return a.timePosition > b.timePosition ? 1 : -1;
+                    //     } else {
+                    //         return 0;
+                    //     }
+                    // })
+                    .map((comment, index) => {
+                        return (
+                            <Collapse
+                                key={index}
+                                className="commentListContainer"
+                                timeout={200}
+                            >
+                                <AudioCommentTile
+                                    commentDetails={comment}
+                                    key={index}
+                                    listKey={index}
+                                    addCommentToArray={updateComment}
+                                    deleteCommentFromArray={deleteComment}
+                                    openDeleteDialog={openDeleteDialog}
+                                />
+                            </Collapse>
+                        );
+                    })}
             </TransitionGroup>
 
             {/* Pop-ups Below */}

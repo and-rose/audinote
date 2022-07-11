@@ -3,10 +3,10 @@ import "../App.css";
 import { AudioCommentList } from "../components/AudioCommentList";
 import { AudioPlayer } from "../components/AudioPlayer";
 import { FileUploadZone } from "../components/FileUploadZone";
+import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { AudioComment, TaskComment } from "../Helpers";
 import { Paper } from "@mui/material";
-
-export type AudioCommentSortType = "dateTime" | "timePosition";
+import { db } from "../firebase";
 
 const paperStyle = {
     padding: 20,
@@ -15,10 +15,66 @@ const paperStyle = {
 
 const App = () => {
     const [audioFile, setAudioFile] = useState<File>();
+    const [sortCommentBy, setSortCommentBy] = useState("dateTime");
     const [audioComments, setAudioComments] = useState<
         (AudioComment | TaskComment)[]
     >([]);
-    const [sortCommentBy, setSortCommentBy] = useState("dateTime");
+
+    useEffect(() => {
+        getStore();
+    }, []);
+
+    function getStore() {
+        const docRef = collection(db, "user-tracks");
+        getDocs(docRef)
+            .then((response) => {
+                const docs = response.docs.map((doc) => ({
+                    data: doc.data(),
+                    id: doc.id,
+                }));
+                const tracksRef = collection(
+                    db,
+                    "user-tracks",
+                    docs[0].id,
+                    "tracks"
+                );
+                getDocs(tracksRef)
+                    .then((response) => {
+                        const tracks = response.docs.map((doc) => ({
+                            data: doc.data(),
+                            id: doc.id,
+                        }));
+                        console.log(tracks);
+                        const commentsRef = collection(
+                            db,
+                            "user-tracks",
+                            docs[0].id,
+                            "tracks",
+                            tracks[0].id,
+                            "comments"
+                        );
+                        getDocs(commentsRef)
+                            .then((response) => {
+                                const comments = response.docs.map((doc) => ({
+                                    data: doc.data(),
+                                    id: doc.id,
+                                }));
+                                console.log(comments);
+                            })
+                            .catch((error) => {
+                                console.log(error);
+                            });
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+
+                console.log(docs);
+            })
+            .catch((error) => {
+                console.log(error.message);
+            });
+    }
 
     function verifyFile(file: File) {
         setAudioFile(file);
@@ -38,15 +94,8 @@ const App = () => {
     }
 
     useEffect(() => {
-        adjustComments(audioComments);
+        setAudioComments(audioComments);
     }, [sortCommentBy]);
-
-    function adjustComments(commentList: (AudioComment | TaskComment)[]) {
-        const sortedList = [...commentList];
-        sortedList.sort(getSortFunc(sortCommentBy));
-        console.log(sortedList);
-        setAudioComments(sortedList);
-    }
 
     return (
         <div className="App">
@@ -55,14 +104,12 @@ const App = () => {
                 <AudioPlayer
                     audioFile={audioFile}
                     comments={audioComments}
-                    updateComments={adjustComments}
+                    updateComments={setAudioComments}
                 />
             </Paper>
             <AudioCommentList
                 comments={audioComments}
-                updateComments={adjustComments}
-                updateSortBy={setSortCommentBy}
-                sortByType={sortCommentBy}
+                updateComments={setAudioComments}
             />
         </div>
     );

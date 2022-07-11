@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { onAuthStateChanged, getAuth, User } from "firebase/auth";
+import { getAuth } from "firebase/auth";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import NavBar from "./components/NavBar";
 import Login from "./pages/Login";
@@ -21,7 +21,7 @@ const defaultTheme = createTheme({
 function App() {
     const auth = getAuth();
 
-    const [user, loading, error] = useAuthState(auth);
+    const [user, loading] = useAuthState(auth);
 
     return (
         <ThemeProvider theme={defaultTheme}>

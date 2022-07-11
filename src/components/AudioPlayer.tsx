@@ -103,11 +103,6 @@ export const AudioPlayer = (props: {
             wsInstance.on("audioprocess", () => {
                 setTrackTime(wsInstance.getCurrentTime());
             });
-
-            wsInstance.on("marker-drop", function (marker) {
-                console.log(wsInstance.markers);
-                console.log("marker drop", marker);
-            });
         }
 
         return () => wsInstance.destroy();
@@ -115,9 +110,7 @@ export const AudioPlayer = (props: {
 
     useEffect(() => {
         ws?.on("finish", () => {
-            console.log(isLooping);
             if (isLooping) {
-                console.log("looping");
                 ws?.seekTo(0);
                 ws?.play();
             } else {
@@ -142,11 +135,6 @@ export const AudioPlayer = (props: {
             setTrackTime(ws?.getCurrentTime());
         });
 
-        ws?.on("marker-drop", function (marker) {
-            console.log(ws?.markers);
-            console.log("marker drop", marker);
-        });
-
         return () => ws?.unAll();
     }, [isLooping]);
 
@@ -166,7 +154,6 @@ export const AudioPlayer = (props: {
                         : theme.palette.primary.main,
             });
         });
-        console.log("redrawing markers");
     }, [props.comments]);
 
     useEffect(() => {

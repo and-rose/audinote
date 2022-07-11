@@ -110,7 +110,6 @@ export const AudioCommentTile = (props: {
     }, []);
 
     useEffect(() => {
-        console.log("ran");
         setCommentType(props.commentDetails instanceof TaskComment);
     }, [props.commentDetails]);
 
