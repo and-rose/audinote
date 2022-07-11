@@ -101,6 +101,9 @@ export const AudioCommentTile = (props: {
     useEffect(() => {
         setCommentType(props.commentDetails instanceof TaskComment);
         setCommentText(props.commentDetails.comment ?? "");
+        if (props.commentDetails instanceof TaskComment) {
+            setIsComplete(props.commentDetails.complete);
+        }
     }, [props.commentDetails]);
 
     return (

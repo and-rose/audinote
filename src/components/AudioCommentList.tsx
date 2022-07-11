@@ -1,5 +1,5 @@
 import MenuItem from "@mui/material/MenuItem";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { AudioComment } from "../Helpers";
 import { AudioCommentTile } from "./AudioComment";
 import "./AudioCommentList.sass";
@@ -62,7 +62,6 @@ export const AudioCommentList = (props: {
     };
 
     const [selectedCommentIndex, setSelectedCommentIndex] = useState("");
-    const [selectedComment, setSelectedComment] = useState<AudioComment>();
     const [dialogOpen, setDialogOpen] = useState(false);
     const [sortBy, setSortBy] = useState<AudioCommentSortType>();
     const handleDialogOpen = () => setDialogOpen(true);
@@ -177,7 +176,6 @@ export const AudioCommentList = (props: {
                 </Menu>
             </div>
 
-            {/* Return Audio Tiles*/}
             {!props.commentLoading ? (
                 <TransitionGroup>
                     {[...props.comments]
@@ -229,7 +227,7 @@ export const AudioCommentList = (props: {
                 <DialogContent>
                     <DialogContentText id="alert-dialog-slide-description">
                         {`Are you sure you want to delete 
-                        ${selectedComment?.label}`}
+                        ${selectedCommentIndex}`}
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
@@ -263,7 +261,7 @@ export const AudioCommentList = (props: {
                     severity="info"
                     sx={{ width: "100%" }}
                 >
-                    {selectedComment?.label} removed.
+                    {selectedCommentIndex} removed.
                 </Alert>
             </Snackbar>
         </div>
