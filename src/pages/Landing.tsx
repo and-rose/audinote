@@ -53,7 +53,7 @@ const Landing = (props: { user: User | null | undefined }) => {
                         spacing={5}
                     >
                         <Button
-                            href={"/Login"}
+                            href={"#/Login"}
                             variant={"contained"}
                             size={"large"}
                             sx={{ my: 2 }}
@@ -61,7 +61,7 @@ const Landing = (props: { user: User | null | undefined }) => {
                             Login
                         </Button>
                         <Button
-                            href={"/Register"}
+                            href={"#/Register"}
                             variant={"contained"}
                             size={"large"}
                             sx={{ my: 2 }}
@@ -71,7 +71,7 @@ const Landing = (props: { user: User | null | undefined }) => {
                     </Stack>
                 ) : (
                     <Button
-                        href={"/Home"}
+                        href={"#/Home"}
                         variant={"contained"}
                         size={"large"}
                         sx={{ my: 2 }}

@@ -19,6 +19,7 @@ import Alert from "@mui/material/Alert";
 import validator from "validator";
 import CircularProgress from "@mui/material/CircularProgress";
 import passwordValidator from "password-validator";
+import { useNavigate } from "react-router-dom";
 
 const passwordSchema = new passwordValidator();
 passwordSchema
@@ -62,6 +63,8 @@ function Register() {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [registerLoading, setRegisterLoading] = useState(false);
+
+    const navigate = useNavigate();
 
     function handlePasswordChange(e) {
         setPassword(e.target.value);
@@ -113,6 +116,7 @@ function Register() {
                         setRegisterLoading(false);
                     });
                 console.log(user);
+                navigate("/Home");
                 // ...
             })
             .catch((error) => {

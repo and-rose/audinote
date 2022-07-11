@@ -1,10 +1,9 @@
 {
-    "name": "audinote",
-    "version": "0.1.0",
+    "name": "Audinote",
+    "version": "0.2.0",
     "author": "Braith Anderson",
     "private": true,
-    "main": "electron/main.ts",
-    "homepage": "./",
+    "homepage": "https://and-rose.github.io/audinote",
     "dependencies": {
         "@emotion/react": "^11.9.0",
         "@emotion/styled": "^11.8.1",
@@ -48,20 +47,12 @@
         "web-vitals": "^2.1.4"
     },
     "scripts": {
+        "predeploy": "npm run build",
+        "deploy": "gh-pages -d build",
         "start": "react-scripts start",
         "build": "react-scripts build",
         "test": "react-scripts test",
         "eject": "react-scripts eject"
-    },
-    "build": {
-        "appId": "com.loyno-mathcs.and-rose.weatherstation.wotdevice",
-        "files": [
-            "build/**/*",
-            "node_modules/**/*"
-        ],
-        "directories": {
-            "buildResources": "assets"
-        }
     },
     "eslintConfig": {
         "extends": [
@@ -89,6 +80,7 @@
         "cross-env": "^7.0.3",
         "electron": "^19.0.1",
         "electron-builder": "^23.0.3",
+        "gh-pages": "^4.0.0",
         "wait-on": "^6.0.1"
     }
 }

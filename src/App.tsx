@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, HashRouter } from "react-router-dom";
 import { getAuth } from "firebase/auth";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import NavBar from "./components/NavBar";
@@ -25,7 +25,7 @@ function App() {
 
     return (
         <ThemeProvider theme={defaultTheme}>
-            <BrowserRouter>
+            <HashRouter>
                 {loading ? (
                     <div>Loading...</div>
                 ) : (
@@ -72,7 +72,7 @@ function App() {
                         />
                     </Routes>
                 )}
-            </BrowserRouter>
+            </HashRouter>
         </ThemeProvider>
     );
 }

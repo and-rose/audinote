@@ -40,7 +40,7 @@ const ResponsiveAppBar = (props: { currentUser: User | null | undefined }) => {
                         variant="h6"
                         noWrap
                         component="a"
-                        href="/Landing"
+                        href="#/Landing"
                         sx={{
                             mr: 5,
                             display: { xs: "none", md: "flex" },
@@ -65,7 +65,7 @@ const ResponsiveAppBar = (props: { currentUser: User | null | undefined }) => {
                             {pages.map((page) => (
                                 <Button
                                     key={page}
-                                    href={`/${page}`}
+                                    href={`#/${page}`}
                                     sx={{
                                         my: 2,
                                         color: "white",
@@ -159,13 +159,13 @@ const ResponsiveAppBar = (props: { currentUser: User | null | undefined }) => {
                     ) : (
                         <>
                             <Button
-                                href={"/Login"}
+                                href={"#/Login"}
                                 sx={{ my: 2, color: "white", display: "block" }}
                             >
                                 Login
                             </Button>
                             <Button
-                                href={"/Register"}
+                                href={"#/Register"}
                                 sx={{ my: 2, color: "white", display: "block" }}
                             >
                                 Sign Up
