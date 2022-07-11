@@ -36,7 +36,7 @@ export const AudioCommentTile = (props: {
     const [commentText, setCommentText] = useState<String>(
         props.commentDetails.comment ?? ""
     );
-    const [isCommentTextFocused, setIsCommentTextFocused] = useState(true);
+    const [isCommentTextFocused, setIsCommentTextFocused] = useState(false);
 
     const submitChangedComment = (commentText: String) => {
         let tc;
@@ -103,7 +103,7 @@ export const AudioCommentTile = (props: {
 
     useEffect(() => {
         const intervaldId = setInterval(() => setCurrentDate(new Date()), 5000);
-        setIsCommentTextFocused(true);
+        setIsCommentTextFocused(false);
         inputRef.current?.focus();
 
         return clearInterval(intervaldId);
