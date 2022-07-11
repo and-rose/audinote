@@ -23,10 +23,9 @@ import MessageIcon from "@mui/icons-material/Message";
 
 export const AudioCommentTile = (props: {
     commentDetails: AudioComment;
-    addCommentToArray: (index: number, newComment: AudioComment) => void;
-    deleteCommentFromArray: (index: number) => void;
+    deleteCommentFromArray: (id: string) => Promise<void>;
     listKey: number;
-    openDeleteDialog: (targetIndex: number) => void;
+    openDeleteDialog: (targetId: string) => void;
 }) => {
     const theme = useTheme();
     const inputRef = useRef<HTMLInputElement>(null);
@@ -40,50 +39,50 @@ export const AudioCommentTile = (props: {
 
     const submitChangedComment = (commentText: String) => {
         let tc;
-        if (commentType) {
-            tc = {
-                ...props.commentDetails,
-            };
-            props.addCommentToArray(
-                props.listKey,
-                new TaskComment(
-                    tc.label,
-                    tc.dateTime,
-                    tc.timePosition,
-                    tc.complete,
-                    commentText
-                )
-            );
-        } else {
-            tc = {
-                ...props.commentDetails,
-            };
-            props.addCommentToArray(
-                props.listKey,
-                new AudioComment(
-                    tc.label,
-                    tc.dateTime,
-                    tc.timePosition,
-                    commentText
-                )
-            );
-        }
+        // if (commentType) {
+        //     tc = {
+        //         ...props.commentDetails,
+        //     };
+        //     props.addCommentToArray(
+        //         props.listKey,
+        //         new TaskComment(
+        //             tc.label,
+        //             tc.dateTime,
+        //             tc.timePosition,
+        //             tc.complete,
+        //             commentText
+        //         )
+        //     );
+        // } else {
+        //     tc = {
+        //         ...props.commentDetails,
+        //     };
+        //     props.addCommentToArray(
+        //         props.listKey,
+        //         new AudioComment(
+        //             tc.label,
+        //             tc.dateTime,
+        //             tc.timePosition,
+        //             commentText
+        //         )
+        //     );
+        // }
     };
 
     const submitCommentCheck = (checked: boolean) => {
-        let tc = {
-            ...props.commentDetails,
-        };
-        props.addCommentToArray(
-            props.listKey,
-            new TaskComment(
-                tc.label,
-                tc.dateTime,
-                tc.timePosition,
-                checked,
-                tc.comment
-            )
-        );
+        // let tc = {
+        //     ...props.commentDetails,
+        // };
+        // props.addCommentToArray(
+        //     props.listKey,
+        //     new TaskComment(
+        //         tc.label,
+        //         tc.dateTime,
+        //         tc.timePosition,
+        //         checked,
+        //         tc.comment
+        //     )
+        // );
     };
 
     function saveCommentAndFinish() {
@@ -218,7 +217,10 @@ export const AudioCommentTile = (props: {
                 <IconButton
                     aria-label="delete"
                     disabled={isCommentTextFocused}
-                    onClick={() => props.openDeleteDialog(props.listKey)}
+                    onClick={() => {
+                        console.log("checking" + props.commentDetails.id);
+                        props.openDeleteDialog(props.commentDetails.id);
+                    }}
                 >
                     <DeleteIcon />
                 </IconButton>

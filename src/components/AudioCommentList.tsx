@@ -23,6 +23,8 @@ import Sort from "@mui/icons-material/Sort";
 import { TransitionGroup } from "react-transition-group";
 import Collapse from "@mui/material/Collapse";
 import CircularProgress from "@mui/material/CircularProgress";
+import { deleteDoc, doc } from "firebase/firestore";
+import { db } from "../firebase";
 
 type AudioCommentSortType = "dateTime" | "timePosition";
 
@@ -46,6 +48,8 @@ export const AudioCommentList = (props: {
     comments: AudioComment[];
     updateComments: (comment: AudioComment[]) => void;
     commentLoading: boolean;
+    uid: string;
+    tid: string;
 }) => {
     //Confirmation Dialog Handlers
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -57,7 +61,7 @@ export const AudioCommentList = (props: {
         setAnchorEl(null);
     };
 
-    const [selectedCommentIndex, setSelectedCommentIndex] = useState(0);
+    const [selectedCommentIndex, setSelectedCommentIndex] = useState("");
     const [selectedComment, setSelectedComment] = useState<AudioComment>();
     const [dialogOpen, setDialogOpen] = useState(false);
     const [sortBy, setSortBy] = useState<AudioCommentSortType>();
@@ -73,23 +77,24 @@ export const AudioCommentList = (props: {
         }
     };
 
-    function openDeleteDialog(targetIndex: number) {
-        console.log(targetIndex);
-        setSelectedCommentIndex(targetIndex);
-        setSelectedComment(props.comments[selectedCommentIndex]);
+    function openDeleteDialog(targetId: string) {
+        console.log(targetId);
+        setSelectedCommentIndex(targetId);
         handleDialogOpen();
     }
 
-    function updateComment(index: number, newComment: AudioComment) {
-        let shallowClone = [...props.comments];
-        shallowClone[index] = newComment;
-        props.updateComments([...shallowClone]);
-    }
-
-    function deleteComment(index: number) {
-        let shallowClone = [...props.comments];
-        shallowClone.splice(index, 1);
-        props.updateComments([...shallowClone]);
+    async function deleteComment(targetId: string) {
+        await deleteDoc(
+            doc(
+                db,
+                "user-tracks",
+                props.uid,
+                "tracks",
+                props.tid,
+                "comments",
+                targetId
+            )
+        );
     }
 
     return (
@@ -198,7 +203,6 @@ export const AudioCommentList = (props: {
                                         commentDetails={comment}
                                         key={index}
                                         listKey={index}
-                                        addCommentToArray={updateComment}
                                         deleteCommentFromArray={deleteComment}
                                         openDeleteDialog={openDeleteDialog}
                                     />

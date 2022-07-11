@@ -1,16 +1,19 @@
 export class AudioComment {
-    label: String;
+    label: string;
     dateTime: Date;
-    comment?: String;
+    comment?: string;
     timePosition: number;
+    id: string;
 
     constructor(
-        label: String,
+        label: string,
         dateTime: Date,
         timePosition: number,
-        comment?: String
+        id: string,
+        comment?: string
     ) {
         this.label = label;
+        this.id = id;
         this.dateTime = dateTime;
         this.timePosition = timePosition;
         this.comment = comment;
@@ -21,25 +24,26 @@ export class TaskComment extends AudioComment {
     complete: boolean;
 
     constructor(
-        label: String,
+        label: string,
         dateTime: Date,
         timePosition: number,
         complete: boolean,
-        comment?: String
+        id: string,
+        comment?: string
     ) {
-        super(label, dateTime, timePosition, comment);
+        super(label, dateTime, timePosition, id, comment);
         this.complete = complete;
     }
 }
 
-export function toTimeStamp(seconds: number): String {
+export function toTimeStamp(seconds: number): string {
     return new Date(seconds * 1000)
         .toISOString()
         .substring(14, 23)
         .replace(".", ":");
 }
 
-export function toShortTimeStamp(seconds: number): String {
+export function toShortTimeStamp(seconds: number): string {
     return new Date(seconds * 1000)
         .toISOString()
         .substring(14, 19)

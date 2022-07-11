@@ -8,7 +8,10 @@ import {
     getDocs,
     onSnapshot,
     query,
+    setDoc,
+    doc,
     where,
+    addDoc,
 } from "firebase/firestore";
 import { AudioComment, TaskComment } from "../Helpers";
 import { Paper } from "@mui/material";
@@ -35,6 +38,7 @@ const App = () => {
             collection(db, "user-tracks", uid, "tracks"),
             where("title", "==", name)
         );
+        console.log(audioFile);
         getDocs(q)
             .then((response) => {
                 if (response.docs.length > 0) {
@@ -43,7 +47,11 @@ const App = () => {
                     }));
                     setTid(docs[0].id);
                 } else {
-                    setTid("NOT FOUND");
+                    const docRef = collection(db, "user-tracks", uid, "tracks");
+                    addDoc(docRef, {
+                        title: name,
+                    });
+                    setTid(docRef.id);
                 }
             })
             .catch((error) => {
@@ -83,12 +91,22 @@ const App = () => {
                     }));
                     setAudioComments(
                         comments.map((comment) => {
-                            return new AudioComment(
-                                comment.data.text,
-                                comment.data.dateAdded.toDate(),
-                                comment.data.position,
-                                comment.data.text
-                            );
+                            if (!comment.data.isTask) {
+                                return new AudioComment(
+                                    comment.data.text,
+                                    comment.data.dateAdded.toDate(),
+                                    comment.data.position,
+                                    comment.id
+                                );
+                            } else {
+                                return new TaskComment(
+                                    comment.data.text,
+                                    comment.data.dateAdded.toDate(),
+                                    comment.data.position,
+                                    comment.data.isComplete,
+                                    comment.id
+                                );
+                            }
                         })
                     );
                     console.log("comment changed!");
@@ -105,6 +123,8 @@ const App = () => {
                 <AudioPlayer
                     audioFile={audioFile}
                     comments={audioComments}
+                    uid={uid}
+                    tid={tid!}
                     updateComments={setAudioComments}
                 />
             </Paper>
@@ -112,6 +132,8 @@ const App = () => {
                 comments={audioComments}
                 updateComments={setAudioComments}
                 commentLoading={commentLoading}
+                tid={tid!}
+                uid={uid}
             />
         </div>
     );

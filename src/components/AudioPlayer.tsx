@@ -22,6 +22,14 @@ import VolumeOffIcon from "@mui/icons-material/VolumeOff";
 import IconButton from "@mui/material/IconButton";
 import ToggleButton from "@mui/material/ToggleButton";
 import CircularProgress from "@mui/material/CircularProgress";
+import {
+    collection,
+    doc,
+    DocumentData,
+    DocumentReference,
+    setDoc,
+} from "firebase/firestore";
+import { db } from "../firebase";
 
 const DynamicVolumeIcon = (props: { volume: number }) => {
     if (props.volume === 0) {
@@ -38,6 +46,8 @@ const DynamicVolumeIcon = (props: { volume: number }) => {
 export const AudioPlayer = (props: {
     audioFile: File | undefined;
     comments: (AudioComment | TaskComment)[];
+    uid: string;
+    tid: string;
     updateComments: (comment: (AudioComment | TaskComment)[]) => void;
 }) => {
     // let [isPlaying, setIsPlaying] = useState(false);
@@ -162,8 +172,17 @@ export const AudioPlayer = (props: {
         }
     }, [props.audioFile]);
 
-    function addComment(newComment: AudioComment | TaskComment) {
-        props.updateComments([...props.comments, newComment]);
+    async function addComment(
+        newComment: AudioComment | TaskComment,
+        docRef: DocumentReference<DocumentData>
+    ) {
+        await setDoc(docRef, {
+            dateAdded: newComment.dateTime,
+            isComplete: false,
+            position: newComment.timePosition,
+            text: newComment.comment ?? "",
+            isTask: newComment instanceof TaskComment,
+        });
     }
 
     return (
@@ -257,12 +276,24 @@ export const AudioPlayer = (props: {
                     >
                         <Button
                             onClick={() => {
+                                const newCommentRef = doc(
+                                    collection(
+                                        db,
+                                        "user-tracks",
+                                        props.uid,
+                                        "tracks",
+                                        props.tid,
+                                        "comments"
+                                    )
+                                );
                                 addComment(
                                     new AudioComment(
                                         "Note Label",
                                         new Date(),
-                                        ws?.getCurrentTime()!
-                                    )
+                                        ws?.getCurrentTime()!,
+                                        newCommentRef.id
+                                    ),
+                                    newCommentRef
                                 );
                             }}
                         >
@@ -275,13 +306,25 @@ export const AudioPlayer = (props: {
                     >
                         <Button
                             onClick={() => {
+                                const newCommentRef = doc(
+                                    collection(
+                                        db,
+                                        "user-tracks",
+                                        props.uid,
+                                        "tracks",
+                                        props.tid,
+                                        "comments"
+                                    )
+                                );
                                 addComment(
                                     new TaskComment(
                                         "Task Label",
                                         new Date(),
                                         ws?.getCurrentTime()!,
-                                        false
-                                    )
+                                        false,
+                                        newCommentRef.id
+                                    ),
+                                    newCommentRef
                                 );
                             }}
                         >
