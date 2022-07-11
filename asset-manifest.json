@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/audinote/static/css/main.6b762ac5.css",
+    "main.js": "/audinote/static/js/main.d96b0ddf.js",
+    "static/js/787.45c581ec.chunk.js": "/audinote/static/js/787.45c581ec.chunk.js",
+    "index.html": "/audinote/index.html",
+    "main.6b762ac5.css.map": "/audinote/static/css/main.6b762ac5.css.map",
+    "main.d96b0ddf.js.map": "/audinote/static/js/main.d96b0ddf.js.map",
+    "787.45c581ec.chunk.js.map": "/audinote/static/js/787.45c581ec.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.6b762ac5.css",
+    "static/js/main.d96b0ddf.js"
+  ]
+}
