@@ -20,11 +20,15 @@ import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
 import MessageIcon from "@mui/icons-material/Message";
+import { doc, updateDoc } from "firebase/firestore";
+import { db } from "../firebase";
 
 export const AudioCommentTile = (props: {
     commentDetails: AudioComment;
     deleteCommentFromArray: (id: string) => Promise<void>;
     listKey: number;
+    uid: string;
+    tid: string;
     openDeleteDialog: (targetId: string) => void;
 }) => {
     const theme = useTheme();
@@ -32,58 +36,44 @@ export const AudioCommentTile = (props: {
     const [currentDate, setCurrentDate] = useState(new Date());
     const [isComplete, setIsComplete] = useState(false);
     const [commentType, setCommentType] = useState(false);
-    const [commentText, setCommentText] = useState<String>(
+    const [commentText, setCommentText] = useState<string>(
         props.commentDetails.comment ?? ""
     );
     const [isCommentTextFocused, setIsCommentTextFocused] = useState(false);
 
-    const submitChangedComment = (commentText: String) => {
-        let tc;
-        // if (commentType) {
-        //     tc = {
-        //         ...props.commentDetails,
-        //     };
-        //     props.addCommentToArray(
-        //         props.listKey,
-        //         new TaskComment(
-        //             tc.label,
-        //             tc.dateTime,
-        //             tc.timePosition,
-        //             tc.complete,
-        //             commentText
-        //         )
-        //     );
-        // } else {
-        //     tc = {
-        //         ...props.commentDetails,
-        //     };
-        //     props.addCommentToArray(
-        //         props.listKey,
-        //         new AudioComment(
-        //             tc.label,
-        //             tc.dateTime,
-        //             tc.timePosition,
-        //             commentText
-        //         )
-        //     );
-        // }
-    };
+    async function submitChangedComment(commentText: string) {
+        await updateDoc(
+            doc(
+                db,
+                "user-tracks",
+                props.uid,
+                "tracks",
+                props.tid,
+                "comments",
+                props.commentDetails.id
+            ),
+            {
+                text: commentText,
+            }
+        );
+    }
 
-    const submitCommentCheck = (checked: boolean) => {
-        // let tc = {
-        //     ...props.commentDetails,
-        // };
-        // props.addCommentToArray(
-        //     props.listKey,
-        //     new TaskComment(
-        //         tc.label,
-        //         tc.dateTime,
-        //         tc.timePosition,
-        //         checked,
-        //         tc.comment
-        //     )
-        // );
-    };
+    async function submitCommentCheck(checked: boolean) {
+        await updateDoc(
+            doc(
+                db,
+                "user-tracks",
+                props.uid,
+                "tracks",
+                props.tid,
+                "comments",
+                props.commentDetails.id
+            ),
+            {
+                isComplete: checked,
+            }
+        );
+    }
 
     function saveCommentAndFinish() {
         submitChangedComment(commentText);

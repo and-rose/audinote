@@ -96,7 +96,8 @@ const App = () => {
                                     comment.data.text,
                                     comment.data.dateAdded.toDate(),
                                     comment.data.position,
-                                    comment.id
+                                    comment.id,
+                                    comment.data.text
                                 );
                             } else {
                                 return new TaskComment(
@@ -104,7 +105,8 @@ const App = () => {
                                     comment.data.dateAdded.toDate(),
                                     comment.data.position,
                                     comment.data.isComplete,
-                                    comment.id
+                                    comment.id,
+                                    comment.data.text
                                 );
                             }
                         })

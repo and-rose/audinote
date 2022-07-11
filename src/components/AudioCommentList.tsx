@@ -203,6 +203,8 @@ export const AudioCommentList = (props: {
                                         commentDetails={comment}
                                         key={index}
                                         listKey={index}
+                                        uid={props.uid}
+                                        tid={props.tid}
                                         deleteCommentFromArray={deleteComment}
                                         openDeleteDialog={openDeleteDialog}
                                     />
