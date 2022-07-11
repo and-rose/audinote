@@ -8,12 +8,14 @@ import {
     doc,
     getDoc,
     getDocs,
+    onSnapshot,
     query,
     where,
 } from "firebase/firestore";
 import { AudioComment, TaskComment } from "../Helpers";
 import { Paper } from "@mui/material";
 import { db } from "../firebase";
+import { getAuth } from "firebase/auth";
 
 const paperStyle = {
     padding: 20,
@@ -21,9 +23,10 @@ const paperStyle = {
 };
 
 const App = () => {
+    const auth = getAuth();
     const [audioFile, setAudioFile] = useState<File>();
     const [commentLoading, setCommentLoading] = useState(false);
-    const [uid, setUid] = useState<string>("WKYrTEUbgVuKxoT9SYmi");
+    const [uid, setUid] = useState<string>(auth.currentUser!.uid);
     const [tid, setTid] = useState<string>();
     const [sortCommentBy, setSortCommentBy] = useState("dateTime");
     const [audioComments, setAudioComments] = useState<
@@ -65,14 +68,13 @@ const App = () => {
                                     data: doc.data(),
                                     id: doc.id,
                                 }));
-                                console.log(comments);
                             })
                             .catch((error) => {
-                                console.log(error);
+                                console.log(error.message);
                             });
                     })
                     .catch((error) => {
-                        console.log(error);
+                        console.log(error.message);
                     });
 
                 console.log(docs);
@@ -100,7 +102,7 @@ const App = () => {
                 }
             })
             .catch((error) => {
-                console.log(error);
+                console.log(error.message);
                 setCommentLoading(false);
             });
     }
@@ -122,8 +124,14 @@ const App = () => {
                 tid!,
                 "comments"
             );
-            getDocs(commentsRef)
-                .then((response) => {
+
+            const path = [db, "user-tracks", uid, "tracks", tid!, "comments"];
+
+            console.log(path.join("/"));
+            onSnapshot(
+                commentsRef,
+                { includeMetadataChanges: true },
+                (response) => {
                     const comments = response.docs.map((doc) => ({
                         data: doc.data(),
                         id: doc.id,
@@ -138,12 +146,10 @@ const App = () => {
                             );
                         })
                     );
+                    console.log("comment changed!");
                     setCommentLoading(false);
-                })
-                .catch((error) => {
-                    console.log(error);
-                    setCommentLoading(false);
-                });
+                }
+            );
         }
     }, [tid]);
 
