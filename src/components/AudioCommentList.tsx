@@ -180,18 +180,19 @@ export const AudioCommentList = (props: {
             {/* Return Audio Tiles*/}
             {!props.commentLoading ? (
                 <TransitionGroup>
-                    {props.comments
-                        // .sort((a, b) => {
-                        //     if (sortBy === "dateTime") {
-                        //         return a.dateTime.getTime() > b.dateTime.getTime()
-                        //             ? 1
-                        //             : -1;
-                        //     } else if (sortBy === "timePosition") {
-                        //         return a.timePosition > b.timePosition ? 1 : -1;
-                        //     } else {
-                        //         return 0;
-                        //     }
-                        // })
+                    {[...props.comments]
+                        .sort((a, b) => {
+                            if (sortBy === "dateTime") {
+                                return a.dateTime.getTime() >
+                                    b.dateTime.getTime()
+                                    ? 1
+                                    : -1;
+                            } else if (sortBy === "timePosition") {
+                                return a.timePosition > b.timePosition ? 1 : -1;
+                            } else {
+                                return 0;
+                            }
+                        })
                         .map((comment, index) => {
                             return (
                                 <Collapse

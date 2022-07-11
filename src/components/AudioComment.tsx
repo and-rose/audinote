@@ -39,7 +39,7 @@ export const AudioCommentTile = (props: {
     const [commentText, setCommentText] = useState<string>(
         props.commentDetails.comment ?? ""
     );
-    const [isCommentTextFocused, setIsCommentTextFocused] = useState(false);
+    const [isCommentTextFocused, setIsCommentTextFocused] = useState(true);
 
     async function submitChangedComment(commentText: string) {
         await updateDoc(
@@ -100,6 +100,7 @@ export const AudioCommentTile = (props: {
 
     useEffect(() => {
         setCommentType(props.commentDetails instanceof TaskComment);
+        setCommentText(props.commentDetails.comment ?? "");
     }, [props.commentDetails]);
 
     return (
