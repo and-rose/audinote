@@ -24,9 +24,8 @@ const App = () => {
     const auth = getAuth();
     const [audioFile, setAudioFile] = useState<File>();
     const [commentLoading, setCommentLoading] = useState(false);
-    const [uid, setUid] = useState<string>(auth.currentUser!.uid);
+    const [uid, setUid] = useState<string>(auth.currentUser?.uid ?? "");
     const [tid, setTid] = useState<string>();
-    const [sortCommentBy, setSortCommentBy] = useState("dateTime");
     const [audioComments, setAudioComments] = useState<
         (AudioComment | TaskComment)[]
     >([]);
@@ -38,7 +37,6 @@ const App = () => {
         );
         getDocs(q)
             .then((response) => {
-                console.log(response.docs.length);
                 if (response.docs.length > 0) {
                     const docs = response.docs.map((doc) => ({
                         id: doc.id,
@@ -72,7 +70,7 @@ const App = () => {
                 "comments"
             );
 
-            const path = [db, "user-tracks", uid, "tracks", tid!, "comments"];
+            const path = ["user-tracks", uid, "tracks", tid!, "comments"];
 
             console.log(path.join("/"));
             onSnapshot(
