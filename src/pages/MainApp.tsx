@@ -22,16 +22,13 @@ const paperStyle = {
 
 const App = () => {
     const [audioFile, setAudioFile] = useState<File>();
+    const [commentLoading, setCommentLoading] = useState(false);
     const [uid, setUid] = useState<string>("WKYrTEUbgVuKxoT9SYmi");
     const [tid, setTid] = useState<string>();
     const [sortCommentBy, setSortCommentBy] = useState("dateTime");
     const [audioComments, setAudioComments] = useState<
         (AudioComment | TaskComment)[]
     >([]);
-
-    useEffect(() => {
-        //getStore();
-    }, []);
 
     function getStore() {
         const docRef = collection(db, "user-tracks");
@@ -92,17 +89,25 @@ const App = () => {
         );
         getDocs(q)
             .then((response) => {
-                const docs = response.docs.map((doc) => ({
-                    id: doc.id,
-                }));
-                setTid(docs[0].id);
+                console.log(response.docs.length);
+                if (response.docs.length > 0) {
+                    const docs = response.docs.map((doc) => ({
+                        id: doc.id,
+                    }));
+                    setTid(docs[0].id);
+                } else {
+                    setTid("NOT FOUND");
+                }
             })
             .catch((error) => {
                 console.log(error);
+                setCommentLoading(false);
             });
     }
 
     function verifyFile(file: File) {
+        setCommentLoading(true);
+        setAudioComments([]);
         setAudioFile(file);
         findTrackId(file.name);
     }
@@ -117,7 +122,6 @@ const App = () => {
                 tid!,
                 "comments"
             );
-
             getDocs(commentsRef)
                 .then((response) => {
                     const comments = response.docs.map((doc) => ({
@@ -134,9 +138,11 @@ const App = () => {
                             );
                         })
                     );
+                    setCommentLoading(false);
                 })
                 .catch((error) => {
                     console.log(error);
+                    setCommentLoading(false);
                 });
         }
     }, [tid]);
@@ -171,6 +177,7 @@ const App = () => {
             <AudioCommentList
                 comments={audioComments}
                 updateComments={setAudioComments}
+                commentLoading={commentLoading}
             />
         </div>
     );
