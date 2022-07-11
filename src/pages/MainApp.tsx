@@ -5,8 +5,6 @@ import { AudioPlayer } from "../components/AudioPlayer";
 import { FileUploadZone } from "../components/FileUploadZone";
 import {
     collection,
-    doc,
-    getDoc,
     getDocs,
     onSnapshot,
     query,
@@ -32,57 +30,6 @@ const App = () => {
     const [audioComments, setAudioComments] = useState<
         (AudioComment | TaskComment)[]
     >([]);
-
-    function getStore() {
-        const docRef = collection(db, "user-tracks");
-        getDocs(docRef)
-            .then((response) => {
-                const docs = response.docs.map((doc) => ({
-                    data: doc.data(),
-                    id: doc.id,
-                }));
-                const tracksRef = collection(
-                    db,
-                    "user-tracks",
-                    docs[0].id,
-                    "tracks"
-                );
-                getDocs(tracksRef)
-                    .then((response) => {
-                        const tracks = response.docs.map((doc) => ({
-                            data: doc.data(),
-                            id: doc.id,
-                        }));
-                        console.log(tracks);
-                        const commentsRef = collection(
-                            db,
-                            "user-tracks",
-                            docs[0].id,
-                            "tracks",
-                            tracks[0].id,
-                            "comments"
-                        );
-                        getDocs(commentsRef)
-                            .then((response) => {
-                                const comments = response.docs.map((doc) => ({
-                                    data: doc.data(),
-                                    id: doc.id,
-                                }));
-                            })
-                            .catch((error) => {
-                                console.log(error.message);
-                            });
-                    })
-                    .catch((error) => {
-                        console.log(error.message);
-                    });
-
-                console.log(docs);
-            })
-            .catch((error) => {
-                console.log(error.message);
-            });
-    }
 
     function findTrackId(name: string) {
         const q = query(
@@ -152,23 +99,6 @@ const App = () => {
             );
         }
     }, [tid]);
-
-    function getSortFunc(type: String) {
-        switch (type) {
-            case "dateTime":
-                return (a, b) => {
-                    return b.dateTime - a.dateTime;
-                };
-            case "timePosition":
-                return (a, b) => {
-                    return a.timePosition - b.timePosition;
-                };
-        }
-    }
-
-    useEffect(() => {
-        setAudioComments(audioComments);
-    }, [sortCommentBy]);
 
     return (
         <div className="App">
