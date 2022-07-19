@@ -17,6 +17,25 @@ const defaultTheme = createTheme({
             default: "#f5f5f5",
         },
     },
+    components: {
+        MuiListItem: {
+            styleOverrides: {
+                root: {
+                    "&$selected": {
+                        backgroundColor: "red",
+                        "&:hover": {
+                            backgroundColor: "orange",
+                        },
+                    },
+                },
+                button: {
+                    "&:hover": {
+                        backgroundColor: "yellow",
+                    },
+                },
+            },
+        },
+    },
 });
 
 function App() {

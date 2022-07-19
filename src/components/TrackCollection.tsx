@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
@@ -56,6 +56,15 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 }));
 
 const TrackCollection = () => {
+    const [selectedIndex, setSelectedIndex] = useState(1);
+
+    const handleListItemClick = (
+        event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+        index: number
+    ) => {
+        setSelectedIndex(index);
+    };
+
     return (
         <Drawer
             variant="permanent"
@@ -117,7 +126,12 @@ const TrackCollection = () => {
                             />
                         }
                     >
-                        <ListItemButton>
+                        <ListItemButton
+                            selected={selectedIndex === index}
+                            onClick={(event) =>
+                                handleListItemClick(event, index)
+                            }
+                        >
                             <ListItemIcon>
                                 <MusicNoteIcon />
                             </ListItemIcon>
