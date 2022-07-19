@@ -8,13 +8,14 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
-import { Box, styled, Typography } from "@mui/material";
+import { Box, IconButton, styled, Typography } from "@mui/material";
 import CircularProgress, {
     CircularProgressProps,
 } from "@mui/material/CircularProgress";
 import { db } from "../firebase";
 import { getAuth } from "firebase/auth";
 import { collection, getDocs } from "firebase/firestore";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 
 function CircularProgressWithLabel(
     props: CircularProgressProps & { value: number }
@@ -44,7 +45,7 @@ function CircularProgressWithLabel(
     );
 }
 
-const drawerWidth = 300;
+const drawerWidth = 450;
 const DrawerHeader = styled("div")(({ theme }) => ({
     display: "flex",
     alignItems: "center",
@@ -103,9 +104,9 @@ const TrackCollection = (props: { tracks: any; uid: string }) => {
                         key={track.title}
                         disablePadding
                         secondaryAction={
-                            <CircularProgressWithLabel
-                                value={Math.random() * 100}
-                            />
+                            <IconButton>
+                                <MoreHorizIcon />
+                            </IconButton>
                         }
                     >
                         <ListItemButton
@@ -114,10 +115,17 @@ const TrackCollection = (props: { tracks: any; uid: string }) => {
                                 handleListItemClick(event, index)
                             }
                         >
-                            <ListItemIcon>
+                            <ListItemIcon sx={{ alignContent: "center" }}>
                                 {selectedIndex === index ? (
-                                    <MusicNoteIcon />
-                                ) : null}
+                                    <MusicNoteIcon
+                                        color={"primary"}
+                                        fontSize={"large"}
+                                    />
+                                ) : (
+                                    <CircularProgressWithLabel
+                                        value={Math.random() * 100}
+                                    />
+                                )}
                             </ListItemIcon>
                             <TrackListItem track={track} uid={props.uid} />
                         </ListItemButton>
