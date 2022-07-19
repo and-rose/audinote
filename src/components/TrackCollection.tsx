@@ -14,6 +14,7 @@ import { Box, IconButton, styled, Toolbar, useTheme } from "@mui/material";
 import CircularProgress, {
     CircularProgressProps,
 } from "@mui/material/CircularProgress";
+import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 
 const drawerWidth = 300;
 
@@ -74,9 +75,17 @@ const TrackCollection = () => {
             }}
         >
             <DrawerHeader>
-                <Typography variant={"h6"} sx={{ fontWeight: 300 }}>
-                    Collection
-                </Typography>
+                <div
+                    style={{
+                        display: "flex",
+                        alignItems: "center",
+                    }}
+                >
+                    <Inventory2OutlinedIcon />
+                    <Typography variant={"h5"} sx={{ fontWeight: 400, ml: 1 }}>
+                        Collection
+                    </Typography>
+                </div>
             </DrawerHeader>
             <Divider />
 
