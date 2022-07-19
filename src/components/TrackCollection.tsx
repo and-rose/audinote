@@ -8,7 +8,14 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
-import { Box, IconButton, styled, Typography } from "@mui/material";
+import {
+    Box,
+    IconButton,
+    Menu,
+    MenuItem,
+    styled,
+    Typography,
+} from "@mui/material";
 import CircularProgress, {
     CircularProgressProps,
 } from "@mui/material/CircularProgress";
@@ -16,6 +23,8 @@ import { db } from "../firebase";
 import { getAuth } from "firebase/auth";
 import { collection, getDocs } from "firebase/firestore";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import DeleteIcon from "@mui/icons-material/Delete";
+import InfoIcon from "@mui/icons-material/Info";
 
 function CircularProgressWithLabel(
     props: CircularProgressProps & { value: number }
@@ -100,44 +109,32 @@ const TrackCollection = (props: { tracks: any; uid: string }) => {
             <Divider />
             <List>
                 {props.tracks.map((track, index) => (
-                    <ListItem
-                        key={track.title}
-                        disablePadding
-                        secondaryAction={
-                            <IconButton>
-                                <MoreHorizIcon />
-                            </IconButton>
-                        }
-                    >
-                        <ListItemButton
-                            selected={selectedIndex === index}
-                            onClick={(event) =>
-                                handleListItemClick(event, index)
-                            }
-                        >
-                            <ListItemIcon sx={{ alignContent: "center" }}>
-                                {selectedIndex === index ? (
-                                    <MusicNoteIcon
-                                        color={"primary"}
-                                        fontSize={"large"}
-                                    />
-                                ) : (
-                                    <CircularProgressWithLabel
-                                        value={Math.random() * 100}
-                                    />
-                                )}
-                            </ListItemIcon>
-                            <TrackListItem track={track} uid={props.uid} />
-                        </ListItemButton>
-                    </ListItem>
+                    <TrackListItem
+                        track={track}
+                        uid={props.uid}
+                        index={index}
+                        selected={selectedIndex === index}
+                        handleSelectFunc={handleListItemClick}
+                    />
                 ))}
             </List>
         </Drawer>
     );
 };
 
-const TrackListItem = (props: { track: any; uid: string }) => {
+const TrackListItem = (props: {
+    track: any;
+    uid: string;
+    index: number;
+    selected: boolean;
+    handleSelectFunc: (
+        event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+        index: number
+    ) => void;
+}) => {
     const [commentCount, setCommentCount] = useState(0);
+    const [contextMenuOpen, setContextMenuOpen] = useState(false);
+    const [profileMenu, setProfileMenu] = useState<null | HTMLElement>(null);
 
     function getCommentCount() {
         const q = collection(
@@ -166,18 +163,105 @@ const TrackListItem = (props: { track: any; uid: string }) => {
     }, [props.track]);
 
     return (
-        <ListItemText
-            primary={props.track.title}
-            primaryTypographyProps={{
-                width: "90%",
-                style: {
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                },
-            }}
-            secondary={commentCount + " comments"}
-        />
+        <>
+            <Menu
+                id="demo-positioned-menu"
+                aria-labelledby="demo-positioned-button"
+                anchorEl={profileMenu}
+                open={Boolean(profileMenu)}
+                onClose={() => setProfileMenu(null)}
+                PaperProps={{
+                    elevation: 0,
+                    sx: {
+                        overflow: "visible",
+                        filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+                        mt: 1.5,
+                        "& .MuiAvatar-root": {
+                            width: 32,
+                            height: 32,
+                            ml: -0.5,
+                            mr: 1,
+                        },
+                        "&:before": {
+                            content: '""',
+                            display: "block",
+                            position: "absolute",
+                            top: 0,
+                            right: 14,
+                            width: 10,
+                            height: 10,
+                            bgcolor: "background.paper",
+                            transform: "translateY(-50%) rotate(45deg)",
+                            zIndex: 0,
+                        },
+                    },
+                }}
+                transformOrigin={{
+                    horizontal: "right",
+                    vertical: "top",
+                }}
+                anchorOrigin={{
+                    horizontal: "right",
+                    vertical: "bottom",
+                }}
+            >
+                <MenuItem onClick={() => setProfileMenu(null)}>
+                    <ListItemIcon>
+                        <InfoIcon />
+                    </ListItemIcon>
+                    <ListItemText>Info</ListItemText>
+                </MenuItem>
+                <MenuItem onClick={() => setProfileMenu(null)}>
+                    <ListItemIcon>
+                        <DeleteIcon color={"error"} />
+                    </ListItemIcon>
+                    <ListItemText>Delete</ListItemText>
+                </MenuItem>
+            </Menu>
+            <ListItem
+                key={props.track.title}
+                disablePadding
+                secondaryAction={
+                    <IconButton
+                        onClick={(e) => setProfileMenu(e.currentTarget)}
+                    >
+                        <MoreHorizIcon />
+                    </IconButton>
+                }
+            >
+                <ListItemButton
+                    selected={props.selected}
+                    onClick={(event) =>
+                        props.handleSelectFunc(event, props.index)
+                    }
+                >
+                    <ListItemIcon sx={{ alignContent: "center" }}>
+                        {props.selected ? (
+                            <MusicNoteIcon
+                                color={"primary"}
+                                fontSize={"large"}
+                            />
+                        ) : (
+                            <CircularProgressWithLabel
+                                value={Math.random() * 100}
+                            />
+                        )}
+                    </ListItemIcon>
+                    <ListItemText
+                        primary={props.track.title}
+                        primaryTypographyProps={{
+                            width: "90%",
+                            style: {
+                                whiteSpace: "nowrap",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                            },
+                        }}
+                        secondary={commentCount + " comments"}
+                    />
+                </ListItemButton>
+            </ListItem>
+        </>
     );
 };
 
