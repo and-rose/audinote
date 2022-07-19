@@ -21,16 +21,11 @@ const defaultTheme = createTheme({
         MuiListItem: {
             styleOverrides: {
                 root: {
-                    "&$selected": {
-                        backgroundColor: "red",
-                        "&:hover": {
-                            backgroundColor: "orange",
-                        },
+                    ".Mui-selected": {
+                        backgroundColor: "rgba(25, 118, 210, 0.25)",
                     },
-                },
-                button: {
                     "&:hover": {
-                        backgroundColor: "yellow",
+                        backgroundColor: "rgba(0, 0, 0, 0.04)",
                     },
                 },
             },
