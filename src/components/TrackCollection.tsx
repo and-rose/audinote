@@ -9,10 +9,19 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import {
+    Alert,
     Box,
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
     IconButton,
     Menu,
     MenuItem,
+    Slide,
+    Snackbar,
     styled,
     Typography,
 } from "@mui/material";
@@ -21,10 +30,11 @@ import CircularProgress, {
 } from "@mui/material/CircularProgress";
 import { db } from "../firebase";
 import { getAuth } from "firebase/auth";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, deleteDoc, getDocs, doc } from "firebase/firestore";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import DeleteIcon from "@mui/icons-material/Delete";
 import InfoIcon from "@mui/icons-material/Info";
+import { TransitionProps } from "@mui/material/transitions";
 
 function CircularProgressWithLabel(
     props: CircularProgressProps & { value: number }
@@ -64,61 +74,148 @@ const DrawerHeader = styled("div")(({ theme }) => ({
     justifyContent: "space-between",
 }));
 
+const Transition = React.forwardRef(function Transition(
+    props: TransitionProps & {
+        children: React.ReactElement<any, any>;
+    },
+    ref: React.Ref<unknown>
+) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
+
 const TrackCollection = (props: { tracks: any; uid: string }) => {
     const auth = getAuth();
     const [selectedIndex, setSelectedIndex] = useState(0);
+    const [selectedId, setSelectedId] = useState("");
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const handleDialogOpen = () => setDialogOpen(true);
+    const handleDialogClose = () => setDialogOpen(false);
+
+    //Snackbar Handlers
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const handleSnackbarOpen = () => setSnackbarOpen(true);
+    const handleSnackbarClose = (event) => {
+        if (event.target.reason !== "clickaway") {
+            setSnackbarOpen(false);
+        }
+    };
+
+    function openDeleteDialog(targetId: string) {
+        console.log(targetId);
+        handleDialogOpen();
+    }
+
+    async function deleteTrack(targetId: string) {
+        await deleteDoc(doc(db, "user-tracks", props.uid, "tracks", targetId));
+    }
 
     const handleListItemClick = (
         event: React.MouseEvent<HTMLDivElement, MouseEvent>,
-        index: number
+        index: number,
+        id: string
     ) => {
         setSelectedIndex(index);
+        setSelectedId(id);
     };
 
     return (
-        <Drawer
-            variant="permanent"
-            anchor="left"
-            PaperProps={{
-                sx: {
-                    mt: "70px",
-                },
-            }}
-            sx={{
-                width: drawerWidth,
-                flexShrink: 0,
-                [`& .MuiDrawer-paper`]: {
+        <>
+            <Drawer
+                variant="permanent"
+                anchor="left"
+                PaperProps={{
+                    sx: {
+                        mt: "70px",
+                    },
+                }}
+                sx={{
                     width: drawerWidth,
-                    boxSizing: "border-box",
-                },
-            }}
-        >
-            <DrawerHeader>
-                <div
-                    style={{
-                        display: "flex",
-                        alignItems: "center",
-                    }}
+                    flexShrink: 0,
+                    [`& .MuiDrawer-paper`]: {
+                        width: drawerWidth,
+                        boxSizing: "border-box",
+                    },
+                }}
+            >
+                <DrawerHeader>
+                    <div
+                        style={{
+                            display: "flex",
+                            alignItems: "center",
+                        }}
+                    >
+                        <Inventory2OutlinedIcon color={"inherit"} />
+                        <Typography
+                            variant={"h5"}
+                            sx={{ fontWeight: 400, ml: 1 }}
+                        >
+                            Collection
+                        </Typography>
+                    </div>
+                </DrawerHeader>
+                <Divider />
+                <List>
+                    {props.tracks.map((track, index) => (
+                        <TrackListItem
+                            track={track}
+                            uid={props.uid}
+                            index={index}
+                            selected={selectedIndex === index}
+                            handleSelectFunc={handleListItemClick}
+                            openDeleteDialog={openDeleteDialog}
+                        />
+                    ))}
+                </List>
+            </Drawer>
+            <Dialog
+                open={dialogOpen}
+                TransitionComponent={Transition}
+                onClose={handleDialogClose}
+                keepMounted
+                aria-describedby="alert-dialog-slide-description"
+            >
+                <DialogTitle>{"Confirm Delete"}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-slide-description">
+                        {`Are you sure you want to delete 
+                ${selectedId}`}
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleDialogClose} color={"info"}>
+                        Cancel
+                    </Button>
+                    <Button
+                        onClick={() => {
+                            deleteTrack(selectedId);
+                            handleDialogClose();
+                            handleSnackbarOpen();
+                        }}
+                        color={"error"}
+                    >
+                        Delete
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={6000}
+                anchorOrigin={{
+                    horizontal: "left",
+                    vertical: "bottom",
+                }}
+                resumeHideDuration={6000}
+                onClose={(event) => handleSnackbarClose(event)}
+            >
+                <Alert
+                    onClose={(event) => handleSnackbarClose(event)}
+                    severity="info"
+                    sx={{ width: "100%" }}
                 >
-                    <Inventory2OutlinedIcon color={"inherit"} />
-                    <Typography variant={"h5"} sx={{ fontWeight: 400, ml: 1 }}>
-                        Collection
-                    </Typography>
-                </div>
-            </DrawerHeader>
-            <Divider />
-            <List>
-                {props.tracks.map((track, index) => (
-                    <TrackListItem
-                        track={track}
-                        uid={props.uid}
-                        index={index}
-                        selected={selectedIndex === index}
-                        handleSelectFunc={handleListItemClick}
-                    />
-                ))}
-            </List>
-        </Drawer>
+                    {selectedId} removed.
+                </Alert>
+            </Snackbar>
+        </>
     );
 };
 
@@ -129,11 +226,12 @@ const TrackListItem = (props: {
     selected: boolean;
     handleSelectFunc: (
         event: React.MouseEvent<HTMLDivElement, MouseEvent>,
-        index: number
+        index: number,
+        id: string
     ) => void;
+    openDeleteDialog: (targetId: string) => void;
 }) => {
     const [commentCount, setCommentCount] = useState(0);
-    const [contextMenuOpen, setContextMenuOpen] = useState(false);
     const [profileMenu, setProfileMenu] = useState<null | HTMLElement>(null);
 
     function getCommentCount() {
@@ -211,7 +309,12 @@ const TrackListItem = (props: {
                     </ListItemIcon>
                     <ListItemText>Info</ListItemText>
                 </MenuItem>
-                <MenuItem onClick={() => setProfileMenu(null)}>
+                <MenuItem
+                    onClick={() => {
+                        setProfileMenu(null);
+                        props.openDeleteDialog(props.track.tid);
+                    }}
+                >
                     <ListItemIcon>
                         <DeleteIcon color={"error"} />
                     </ListItemIcon>
@@ -232,7 +335,11 @@ const TrackListItem = (props: {
                 <ListItemButton
                     selected={props.selected}
                     onClick={(event) =>
-                        props.handleSelectFunc(event, props.index)
+                        props.handleSelectFunc(
+                            event,
+                            props.index,
+                            props.track.tid
+                        )
                     }
                 >
                     <ListItemIcon sx={{ alignContent: "center" }}>
