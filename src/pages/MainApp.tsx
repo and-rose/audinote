@@ -23,7 +23,7 @@ const paperStyle = {
     padding: 20,
 };
 
-const App = () => {
+const App = (props: {}) => {
     const auth = getAuth();
     const [audioFile, setAudioFile] = useState<File>();
     const [commentLoading, setCommentLoading] = useState(false);

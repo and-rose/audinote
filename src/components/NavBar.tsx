@@ -16,6 +16,7 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import LogoutIcon from "@mui/icons-material/Logout";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import InventoryIcon from "@mui/icons-material/Inventory";
 
 const pages = ["Home", "Help"];
 

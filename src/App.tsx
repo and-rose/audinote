@@ -23,6 +23,15 @@ function App() {
     const auth = getAuth();
 
     const [user, loading] = useAuthState(auth);
+    const [collectionOpen, setCollectionOpen] = React.useState(false);
+
+    const handleCollectionOpen = () => {
+        setCollectionOpen(true);
+    };
+
+    const handleCollectionClose = () => {
+        setCollectionOpen(false);
+    };
 
     return (
         <ThemeProvider theme={defaultTheme}>
