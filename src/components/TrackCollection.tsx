@@ -1,22 +1,20 @@
 import React, { useState } from "react";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
-import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
+import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
-import { Box, IconButton, styled, Toolbar, useTheme } from "@mui/material";
+import { Box, styled, Typography } from "@mui/material";
 import CircularProgress, {
     CircularProgressProps,
 } from "@mui/material/CircularProgress";
-import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
-
-const drawerWidth = 300;
+import { db } from "../firebase";
+import { getAuth } from "firebase/auth";
+import { collection, getDocs } from "firebase/firestore";
 
 function CircularProgressWithLabel(
     props: CircularProgressProps & { value: number }
@@ -46,6 +44,7 @@ function CircularProgressWithLabel(
     );
 }
 
+const drawerWidth = 300;
 const DrawerHeader = styled("div")(({ theme }) => ({
     display: "flex",
     alignItems: "center",
@@ -55,8 +54,9 @@ const DrawerHeader = styled("div")(({ theme }) => ({
     justifyContent: "space-between",
 }));
 
-const TrackCollection = () => {
-    const [selectedIndex, setSelectedIndex] = useState(1);
+const TrackCollection = (props: { tracks: any }) => {
+    const auth = getAuth();
+    const [selectedIndex, setSelectedIndex] = useState(0);
 
     const handleListItemClick = (
         event: React.MouseEvent<HTMLDivElement, MouseEvent>,
@@ -90,35 +90,17 @@ const TrackCollection = () => {
                         alignItems: "center",
                     }}
                 >
-                    <Inventory2OutlinedIcon />
+                    <Inventory2OutlinedIcon color={"inherit"} />
                     <Typography variant={"h5"} sx={{ fontWeight: 400, ml: 1 }}>
                         Collection
                     </Typography>
                 </div>
             </DrawerHeader>
             <Divider />
-
             <List>
-                {[
-                    "Track 1",
-                    "Track 2",
-                    "Track 3",
-                    "Track 4",
-                    "Track 1",
-                    "Track 2",
-                    "Track 3",
-                    "Track 4",
-                    "Track 1",
-                    "Track 2",
-                    "Track 3",
-                    "Track 4",
-                    "Track 1",
-                    "Track 2",
-                    "Track 3",
-                    "Track 4",
-                ].map((text, index) => (
+                {props.tracks.map((track, index) => (
                     <ListItem
-                        key={text}
+                        key={track.title}
                         disablePadding
                         secondaryAction={
                             <CircularProgressWithLabel
@@ -133,11 +115,21 @@ const TrackCollection = () => {
                             }
                         >
                             <ListItemIcon>
-                                <MusicNoteIcon />
+                                {selectedIndex === index ? (
+                                    <MusicNoteIcon />
+                                ) : null}
                             </ListItemIcon>
                             <ListItemText
-                                primary={text}
-                                secondary={"5 comments"}
+                                primary={track.title}
+                                primaryTypographyProps={{
+                                    width: "90%",
+                                    style: {
+                                        whiteSpace: "nowrap",
+                                        overflow: "hidden",
+                                        textOverflow: "ellipsis",
+                                    },
+                                }}
+                                secondary={"5 Comments"}
                             />
                         </ListItemButton>
                     </ListItem>

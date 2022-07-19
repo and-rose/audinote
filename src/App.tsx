@@ -1,6 +1,5 @@
 import React from "react";
 import { Routes, Route, HashRouter } from "react-router-dom";
-import { getAuth } from "firebase/auth";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import NavBar from "./components/NavBar";
 import Login from "./pages/Login";
@@ -10,6 +9,7 @@ import Landing from "./pages/Landing";
 import ProtectedRoute from "./pages/PrivateRouter";
 import { useAuthState } from "react-firebase-hooks/auth";
 import CssBaseline from "@mui/material/CssBaseline";
+import { getAuth } from "firebase/auth";
 
 const defaultTheme = createTheme({
     palette: {
@@ -22,7 +22,7 @@ const defaultTheme = createTheme({
             styleOverrides: {
                 root: {
                     ".Mui-selected": {
-                        backgroundColor: "rgba(25, 118, 210, 0.25)",
+                        backgroundColor: "rgba(25, 118, 210, 0.35)",
                     },
                     "&:hover": {
                         backgroundColor: "rgba(0, 0, 0, 0.04)",

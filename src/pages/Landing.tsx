@@ -39,7 +39,6 @@ const Landing = (props: { user: User | null | undefined }) => {
                 sx={{
                     width: "30vw",
                     height: "100vh",
-                    bgcolor: "#f5f5f5",
                 }}
                 display="flex"
                 alignItems="center"

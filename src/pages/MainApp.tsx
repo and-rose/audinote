@@ -23,12 +23,13 @@ const paperStyle = {
     padding: 20,
 };
 
-const App = (props: {}) => {
+const App = () => {
     const auth = getAuth();
     const [audioFile, setAudioFile] = useState<File>();
     const [commentLoading, setCommentLoading] = useState(false);
     const [uid, setUid] = useState<string>(auth.currentUser?.uid ?? "");
     const [tid, setTid] = useState<string>();
+    const [tracks, setTracks] = useState<any>([]);
     const [audioComments, setAudioComments] = useState<
         (AudioComment | TaskComment)[]
     >([]);
@@ -53,6 +54,44 @@ const App = (props: {}) => {
                     });
                     setTid(docRef.id);
                 }
+            })
+            .catch((error) => {
+                console.log(error.message);
+                setCommentLoading(false);
+            });
+    }
+
+    function getCommentCount(tid: string) {
+        console.log(tid);
+        const q = collection(db, "user-tracks", uid, "tracks", tid, "comments");
+        getDocs(q)
+            .then((response) => {
+                const docs = response.docs.map((doc) => ({
+                    id: doc.id,
+                }));
+                return docs.length;
+            })
+            .catch((error) => {
+                console.log(error.message);
+                return 0;
+            });
+    }
+
+    function getUserTracks() {
+        const q = collection(db, "user-tracks", uid, "tracks");
+        getDocs(q)
+            .then((response) => {
+                const docs = response.docs.map((doc) => ({
+                    title: doc.data().title,
+                    tid: doc.id,
+                }));
+                const docsWithCount = docs.map((doc) => ({
+                    title: doc.title,
+                    tid: doc.tid,
+                    commentCount: getCommentCount(doc.tid),
+                }));
+                setTracks(docsWithCount);
+                console.log(tracks);
             })
             .catch((error) => {
                 console.log(error.message);
@@ -118,6 +157,10 @@ const App = (props: {}) => {
         }
     }, [tid]);
 
+    useEffect(() => {
+        getUserTracks();
+    }, [uid]);
+
     return (
         <Box
             sx={{
@@ -125,7 +168,7 @@ const App = (props: {}) => {
                 height: "calc(100vh - 69px)",
             }}
         >
-            <TrackCollection />
+            <TrackCollection tracks={tracks} />
             <Box className="App" width={"100%"} m={2}>
                 <Stack spacing={2}>
                     <FileUploadZone newFileFound={(f: File) => verifyFile(f)} />
