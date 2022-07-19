@@ -119,7 +119,12 @@ const App = () => {
     }, [tid]);
 
     return (
-        <Box sx={{ display: "flex", height: "calc(100vh - 69px)" }}>
+        <Box
+            sx={{
+                display: "flex",
+                height: "calc(100vh - 69px)",
+            }}
+        >
             <TrackCollection />
             <Box className="App" width={"100%"} m={2}>
                 <Stack spacing={2}>

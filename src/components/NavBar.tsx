@@ -42,7 +42,7 @@ const ResponsiveAppBar = (props: { currentUser: User | null | undefined }) => {
                 }}
             >
                 <Container maxWidth={false}>
-                    <Toolbar>
+                    <Toolbar disableGutters>
                         <Typography
                             variant="h6"
                             noWrap

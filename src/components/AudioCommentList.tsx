@@ -100,11 +100,7 @@ export const AudioCommentList = (props: {
     }
 
     return (
-        <Box
-            className="commentListContainer"
-            alignItems="center"
-            justifyContent="center"
-        >
+        <Box className="commentListContainer">
             <div className="commentHeader">
                 {/* Header Content */}
                 <h2>Comments</h2>
@@ -186,8 +182,8 @@ export const AudioCommentList = (props: {
                 className="commentsWrapper"
                 maxWidth={false}
                 sx={{
-                    overflowY: "auto",
-                    height: "43vh",
+                    height: "42vh",
+                    overflowY: "scroll",
                 }}
             >
                 <ScrollFade />
