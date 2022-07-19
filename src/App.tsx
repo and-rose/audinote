@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Routes, Route, HashRouter } from "react-router-dom";
+import { Routes, Route, HashRouter } from "react-router-dom";
 import { getAuth } from "firebase/auth";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import NavBar from "./components/NavBar";
@@ -9,6 +9,7 @@ import Register from "./pages/Register";
 import Landing from "./pages/Landing";
 import ProtectedRoute from "./pages/PrivateRouter";
 import { useAuthState } from "react-firebase-hooks/auth";
+import CssBaseline from "@mui/material/CssBaseline";
 
 const defaultTheme = createTheme({
     palette: {
@@ -34,6 +35,7 @@ function App() {
                             path={"/"}
                             element={
                                 <ProtectedRoute user={user}>
+                                    <CssBaseline />
                                     <NavBar currentUser={user} />
                                     <Home />
                                 </ProtectedRoute>
@@ -43,6 +45,7 @@ function App() {
                             path={"/Home"}
                             element={
                                 <ProtectedRoute user={user}>
+                                    <CssBaseline />
                                     <NavBar currentUser={user} />
                                     <Home />
                                 </ProtectedRoute>
@@ -56,6 +59,7 @@ function App() {
                             path="/Login"
                             element={
                                 <>
+                                    <CssBaseline />
                                     <NavBar currentUser={user} />
                                     <Login />
                                 </>
@@ -65,6 +69,7 @@ function App() {
                             path="/Register"
                             element={
                                 <>
+                                    <CssBaseline />
                                     <NavBar currentUser={user} />
                                     <Register />
                                 </>

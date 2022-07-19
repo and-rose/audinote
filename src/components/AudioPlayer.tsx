@@ -186,7 +186,7 @@ export const AudioPlayer = (props: {
     }
 
     return (
-        <Fragment>
+        <>
             {isLoading ? (
                 <Stack
                     direction="row"
@@ -333,7 +333,7 @@ export const AudioPlayer = (props: {
                     </Tooltip>
                 </ButtonGroup>
             </Stack>
-        </Fragment>
+        </>
     );
 };
 

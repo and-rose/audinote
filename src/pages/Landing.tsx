@@ -5,7 +5,7 @@ import React from "react";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
-import { User } from "@firebase/auth";
+import { User } from "firebase/auth";
 
 const Landing = (props: { user: User | null | undefined }) => {
     return (

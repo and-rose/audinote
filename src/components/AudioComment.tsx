@@ -13,6 +13,8 @@ import {
     debounce,
     useTheme,
     Checkbox,
+    Box,
+    Paper,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
@@ -22,6 +24,10 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import MessageIcon from "@mui/icons-material/Message";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase";
+
+const paperStyle = {
+    padding: 10,
+};
 
 export const AudioCommentTile = (props: {
     commentDetails: AudioComment;
@@ -107,7 +113,12 @@ export const AudioCommentTile = (props: {
     }, [props.commentDetails]);
 
     return (
-        <div className="commentTileContainer">
+        <Paper
+            elevation={2}
+            style={paperStyle}
+            className="commentTileContainer"
+            sx={{ borderRadius: "8px" }}
+        >
             <div
                 className="colourTab"
                 style={{
@@ -118,7 +129,7 @@ export const AudioCommentTile = (props: {
                         : theme.palette.primary.main,
                 }}
             ></div>
-            <div className="commentType">
+            <Box className="commentType" width={"40px"}>
                 {commentType ? (
                     <Checkbox
                         color="success"
@@ -127,13 +138,9 @@ export const AudioCommentTile = (props: {
                         size={"medium"}
                     />
                 ) : (
-                    <MessageIcon
-                        color={"primary"}
-                        fontSize={"medium"}
-                        style={{ padding: 9 }}
-                    />
+                    <MessageIcon color={"primary"} fontSize={"medium"} />
                 )}
-            </div>
+            </Box>
             <div className="commentContent">
                 <div className="commentTimestamp">
                     <p>{toTimeStamp(props.commentDetails.timePosition)}</p>
@@ -224,6 +231,6 @@ export const AudioCommentTile = (props: {
                     {timeDifference(currentDate, props.commentDetails.dateTime)}
                 </p>
             </div>
-        </div>
+        </Paper>
     );
 };

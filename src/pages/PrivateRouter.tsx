@@ -3,8 +3,8 @@
 
 // If they are: they proceed to the page
 // If not: they are redirected to the login page.
-import { User } from "firebase/auth";
 import React from "react";
+import { User } from "firebase/auth";
 import { Navigate } from "react-router-dom";
 
 const ProtectedRoute = (props: { user: User | null | undefined; children }) => {

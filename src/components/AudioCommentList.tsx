@@ -25,6 +25,9 @@ import Collapse from "@mui/material/Collapse";
 import CircularProgress from "@mui/material/CircularProgress";
 import { deleteDoc, doc } from "firebase/firestore";
 import { db } from "../firebase";
+import Box from "@mui/material/Box";
+import { Container } from "@mui/material";
+import ScrollFade from "@benestudioco/react-scrollfade";
 
 type AudioCommentSortType = "dateTime" | "timePosition";
 
@@ -97,7 +100,11 @@ export const AudioCommentList = (props: {
     }
 
     return (
-        <div className="commentListContainer">
+        <Box
+            className="commentListContainer"
+            alignItems="center"
+            justifyContent="center"
+        >
             <div className="commentHeader">
                 {/* Header Content */}
                 <h2>Comments</h2>
@@ -175,45 +182,58 @@ export const AudioCommentList = (props: {
                     </MenuItem>
                 </Menu>
             </div>
-
-            {!props.commentLoading ? (
-                <TransitionGroup>
-                    {[...props.comments]
-                        .sort((a, b) => {
-                            if (sortBy === "dateTime") {
-                                return a.dateTime.getTime() >
-                                    b.dateTime.getTime()
-                                    ? 1
-                                    : -1;
-                            } else if (sortBy === "timePosition") {
-                                return a.timePosition > b.timePosition ? 1 : -1;
-                            } else {
-                                return 0;
-                            }
-                        })
-                        .map((comment, index) => {
-                            return (
-                                <Collapse
-                                    key={index}
-                                    className="commentListContainer"
-                                    timeout={200}
-                                >
-                                    <AudioCommentTile
-                                        commentDetails={comment}
+            <Container
+                className="commentsWrapper"
+                maxWidth={false}
+                sx={{
+                    overflowY: "auto",
+                    height: "43vh",
+                }}
+            >
+                <ScrollFade />
+                {!props.commentLoading ? (
+                    <TransitionGroup>
+                        {[...props.comments]
+                            .sort((a, b) => {
+                                if (sortBy === "dateTime") {
+                                    return a.dateTime.getTime() >
+                                        b.dateTime.getTime()
+                                        ? 1
+                                        : -1;
+                                } else if (sortBy === "timePosition") {
+                                    return a.timePosition > b.timePosition
+                                        ? 1
+                                        : -1;
+                                } else {
+                                    return 0;
+                                }
+                            })
+                            .map((comment, index) => {
+                                return (
+                                    <Collapse
                                         key={index}
-                                        listKey={index}
-                                        uid={props.uid}
-                                        tid={props.tid}
-                                        deleteCommentFromArray={deleteComment}
-                                        openDeleteDialog={openDeleteDialog}
-                                    />
-                                </Collapse>
-                            );
-                        })}
-                </TransitionGroup>
-            ) : (
-                <CircularProgress />
-            )}
+                                        className="commentListContainer"
+                                        timeout={200}
+                                    >
+                                        <AudioCommentTile
+                                            commentDetails={comment}
+                                            key={index}
+                                            listKey={index}
+                                            uid={props.uid}
+                                            tid={props.tid}
+                                            deleteCommentFromArray={
+                                                deleteComment
+                                            }
+                                            openDeleteDialog={openDeleteDialog}
+                                        />
+                                    </Collapse>
+                                );
+                            })}
+                    </TransitionGroup>
+                ) : (
+                    <CircularProgress />
+                )}
+            </Container>
 
             {/* Pop-ups Below */}
             <Dialog
@@ -264,6 +284,6 @@ export const AudioCommentList = (props: {
                     {selectedCommentIndex} removed.
                 </Alert>
             </Snackbar>
-        </div>
+        </Box>
     );
 };

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "../App.css";
+import "../App.sass";
 import { AudioCommentList } from "../components/AudioCommentList";
 import { AudioPlayer } from "../components/AudioPlayer";
 import { FileUploadZone } from "../components/FileUploadZone";
@@ -14,13 +14,13 @@ import {
     addDoc,
 } from "firebase/firestore";
 import { AudioComment, TaskComment } from "../Helpers";
-import { Paper } from "@mui/material";
+import { Box, Paper, Stack } from "@mui/material";
 import { db } from "../firebase";
 import { getAuth } from "firebase/auth";
+import TrackCollection from "../components/TrackCollection";
 
 const paperStyle = {
     padding: 20,
-    margin: "20px auto",
 };
 
 const App = () => {
@@ -119,25 +119,30 @@ const App = () => {
     }, [tid]);
 
     return (
-        <div className="App">
-            <FileUploadZone newFileFound={(f: File) => verifyFile(f)} />
-            <Paper elevation={5} style={paperStyle}>
-                <AudioPlayer
-                    audioFile={audioFile}
-                    comments={audioComments}
-                    uid={uid}
-                    tid={tid!}
-                    updateComments={setAudioComments}
-                />
-            </Paper>
-            <AudioCommentList
-                comments={audioComments}
-                updateComments={setAudioComments}
-                commentLoading={commentLoading}
-                tid={tid!}
-                uid={uid}
-            />
-        </div>
+        <Box sx={{ display: "flex", height: "calc(100vh - 69px)" }}>
+            <TrackCollection />
+            <Box className="App" width={"100%"} m={2}>
+                <Stack spacing={2}>
+                    <FileUploadZone newFileFound={(f: File) => verifyFile(f)} />
+                    <Paper elevation={2} style={paperStyle}>
+                        <AudioPlayer
+                            audioFile={audioFile}
+                            comments={audioComments}
+                            uid={uid}
+                            tid={tid!}
+                            updateComments={setAudioComments}
+                        />
+                    </Paper>
+                    <AudioCommentList
+                        comments={audioComments}
+                        updateComments={setAudioComments}
+                        commentLoading={commentLoading}
+                        tid={tid!}
+                        uid={uid}
+                    />
+                </Stack>
+            </Box>
+        </Box>
     );
 };
 
