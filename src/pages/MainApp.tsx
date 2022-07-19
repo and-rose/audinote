@@ -61,22 +61,6 @@ const App = () => {
             });
     }
 
-    function getCommentCount(tid: string) {
-        console.log(tid);
-        const q = collection(db, "user-tracks", uid, "tracks", tid, "comments");
-        getDocs(q)
-            .then((response) => {
-                const docs = response.docs.map((doc) => ({
-                    id: doc.id,
-                }));
-                return docs.length;
-            })
-            .catch((error) => {
-                console.log(error.message);
-                return 0;
-            });
-    }
-
     function getUserTracks() {
         const q = collection(db, "user-tracks", uid, "tracks");
         getDocs(q)
@@ -85,13 +69,7 @@ const App = () => {
                     title: doc.data().title,
                     tid: doc.id,
                 }));
-                const docsWithCount = docs.map((doc) => ({
-                    title: doc.title,
-                    tid: doc.tid,
-                    commentCount: getCommentCount(doc.tid),
-                }));
-                setTracks(docsWithCount);
-                console.log(tracks);
+                setTracks(docs);
             })
             .catch((error) => {
                 console.log(error.message);
@@ -168,7 +146,7 @@ const App = () => {
                 height: "calc(100vh - 69px)",
             }}
         >
-            <TrackCollection tracks={tracks} />
+            <TrackCollection tracks={tracks} uid={uid} />
             <Box className="App" width={"100%"} m={2}>
                 <Stack spacing={2}>
                     <FileUploadZone newFileFound={(f: File) => verifyFile(f)} />

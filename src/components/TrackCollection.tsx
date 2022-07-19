@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
@@ -54,7 +54,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
     justifyContent: "space-between",
 }));
 
-const TrackCollection = (props: { tracks: any }) => {
+const TrackCollection = (props: { tracks: any; uid: string }) => {
     const auth = getAuth();
     const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -119,23 +119,57 @@ const TrackCollection = (props: { tracks: any }) => {
                                     <MusicNoteIcon />
                                 ) : null}
                             </ListItemIcon>
-                            <ListItemText
-                                primary={track.title}
-                                primaryTypographyProps={{
-                                    width: "90%",
-                                    style: {
-                                        whiteSpace: "nowrap",
-                                        overflow: "hidden",
-                                        textOverflow: "ellipsis",
-                                    },
-                                }}
-                                secondary={"5 Comments"}
-                            />
+                            <TrackListItem track={track} uid={props.uid} />
                         </ListItemButton>
                     </ListItem>
                 ))}
             </List>
         </Drawer>
+    );
+};
+
+const TrackListItem = (props: { track: any; uid: string }) => {
+    const [commentCount, setCommentCount] = useState(0);
+
+    function getCommentCount() {
+        const q = collection(
+            db,
+            "user-tracks",
+            props.uid,
+            "tracks",
+            props.track.tid,
+            "comments"
+        );
+        getDocs(q)
+            .then((response) => {
+                const docs = response.docs.map((doc) => ({
+                    id: doc.id,
+                }));
+                setCommentCount(docs.length);
+            })
+            .catch((error) => {
+                console.log(error.message);
+                setCommentCount(0);
+            });
+    }
+
+    useEffect(() => {
+        getCommentCount();
+    }, [props.track]);
+
+    return (
+        <ListItemText
+            primary={props.track.title}
+            primaryTypographyProps={{
+                width: "90%",
+                style: {
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                },
+            }}
+            secondary={commentCount + " comments"}
+        />
     );
 };
 
