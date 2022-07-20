@@ -85,6 +85,7 @@ const App = () => {
     }
 
     useEffect(() => {
+        let unsubRef = () => {};
         if (audioFile) {
             const commentsRef = collection(
                 db,
@@ -98,7 +99,7 @@ const App = () => {
             const path = ["user-tracks", uid, "tracks", tid!, "comments"];
 
             console.log(path.join("/"));
-            onSnapshot(
+            unsubRef = onSnapshot(
                 commentsRef,
                 { includeMetadataChanges: true },
                 (response) => {
@@ -133,10 +134,26 @@ const App = () => {
                 }
             );
         }
+        return () => unsubRef();
     }, [tid]);
 
     useEffect(() => {
-        getUserTracks();
+        let unsubRef = () => {};
+        if (uid == undefined || uid !== null) {
+            getUserTracks();
+            unsubRef = onSnapshot(
+                collection(db, "user-tracks", uid, "tracks"),
+                { includeMetadataChanges: true },
+                (response) => {
+                    const docs = response.docs.map((doc) => ({
+                        title: doc.data().title,
+                        tid: doc.id,
+                    }));
+                    setTracks(docs);
+                }
+            );
+        }
+        return () => unsubRef();
     }, [uid]);
 
     return (
@@ -146,10 +163,13 @@ const App = () => {
                 height: "calc(100vh - 69px)",
             }}
         >
-            <TrackCollection tracks={tracks} uid={uid} />
+            <TrackCollection
+                tracks={tracks}
+                uid={uid}
+                verifyFile={verifyFile}
+            />
             <Box className="App" width={"100%"} m={2}>
                 <Stack spacing={2}>
-                    <FileUploadZone newFileFound={(f: File) => verifyFile(f)} />
                     <Paper elevation={2} style={paperStyle}>
                         <AudioPlayer
                             audioFile={audioFile}

@@ -22,7 +22,8 @@ const defaultTheme = createTheme({
             styleOverrides: {
                 root: {
                     ".Mui-selected": {
-                        backgroundColor: "rgba(25, 118, 210, 0.35)",
+                        backgroundColor: "rgba(25, 118, 210, 0.3)",
+                        elevation: 5,
                     },
                     "&:hover": {
                         backgroundColor: "rgba(0, 0, 0, 0.04)",

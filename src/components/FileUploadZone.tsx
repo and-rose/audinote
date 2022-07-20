@@ -3,7 +3,10 @@ import React, { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import "./FileUploadZone.sass";
 
-export const FileUploadZone = (props: { newFileFound: (f: File) => void }) => {
+export const FileUploadZone = (props: {
+    newFileFound: (f: File) => void;
+    children: React.ReactNode;
+}) => {
     const theme = useTheme();
     const onDrop = useCallback((acceptedFiles: File[]) => {
         acceptedFiles.forEach((file: File) => {
@@ -19,7 +22,7 @@ export const FileUploadZone = (props: { newFileFound: (f: File) => void }) => {
         });
     }, []);
 
-    const { getRootProps, getInputProps } = useDropzone({
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop,
         maxFiles: 1,
         accept: {
@@ -30,15 +33,31 @@ export const FileUploadZone = (props: { newFileFound: (f: File) => void }) => {
         <section>
             <div
                 {...getRootProps()}
-                className="filedropzone"
                 style={{
-                    backgroundColor: theme.palette.grey[300],
-                    outlineColor: theme.palette.grey[400],
-                    color: theme.palette.grey[700],
+                    position: "relative",
+                    width: "100%",
                 }}
             >
-                <input {...getInputProps()} />
-                <p>Drop any audio file here!</p>
+                {isDragActive ? (
+                    <div
+                        className="filedropzone"
+                        style={{
+                            display: "flex",
+                            position: "absolute",
+                            zIndex: 10,
+                            opacity: 0.9,
+                            justifyContent: "center",
+                            verticalAlign: "middle",
+                            backgroundColor: theme.palette.grey[300],
+                            outlineColor: theme.palette.grey[400],
+                            color: theme.palette.grey[700],
+                        }}
+                    >
+                        <input {...getInputProps()} />
+                        <p>Drop any audio file here!</p>
+                    </div>
+                ) : null}
+                {props.children}
             </div>
         </section>
     );

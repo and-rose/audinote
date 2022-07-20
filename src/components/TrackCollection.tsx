@@ -35,6 +35,7 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import DeleteIcon from "@mui/icons-material/Delete";
 import InfoIcon from "@mui/icons-material/Info";
 import { TransitionProps } from "@mui/material/transitions";
+import { FileUploadZone } from "./FileUploadZone";
 
 function CircularProgressWithLabel(
     props: CircularProgressProps & { value: number }
@@ -83,10 +84,15 @@ const Transition = React.forwardRef(function Transition(
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const TrackCollection = (props: { tracks: any; uid: string }) => {
+const TrackCollection = (props: {
+    tracks: any;
+    uid: string;
+    verifyFile: (file: File) => void;
+}) => {
     const auth = getAuth();
     const [selectedIndex, setSelectedIndex] = useState(0);
     const [selectedId, setSelectedId] = useState("");
+    const [deleteId, setDeleteId] = useState("");
     const [dialogOpen, setDialogOpen] = useState(false);
     const handleDialogOpen = () => setDialogOpen(true);
     const handleDialogClose = () => setDialogOpen(false);
@@ -101,7 +107,7 @@ const TrackCollection = (props: { tracks: any; uid: string }) => {
     };
 
     function openDeleteDialog(targetId: string) {
-        console.log(targetId);
+        setDeleteId(targetId);
         handleDialogOpen();
     }
 
@@ -154,18 +160,20 @@ const TrackCollection = (props: { tracks: any; uid: string }) => {
                     </div>
                 </DrawerHeader>
                 <Divider />
-                <List>
-                    {props.tracks.map((track, index) => (
-                        <TrackListItem
-                            track={track}
-                            uid={props.uid}
-                            index={index}
-                            selected={selectedIndex === index}
-                            handleSelectFunc={handleListItemClick}
-                            openDeleteDialog={openDeleteDialog}
-                        />
-                    ))}
-                </List>
+                <FileUploadZone newFileFound={(f: File) => props.verifyFile(f)}>
+                    <List>
+                        {props.tracks.map((track, index) => (
+                            <TrackListItem
+                                track={track}
+                                uid={props.uid}
+                                index={index}
+                                selected={selectedIndex === index}
+                                handleSelectFunc={handleListItemClick}
+                                openDeleteDialog={openDeleteDialog}
+                            />
+                        ))}
+                    </List>
+                </FileUploadZone>
             </Drawer>
             <Dialog
                 open={dialogOpen}
@@ -178,7 +186,7 @@ const TrackCollection = (props: { tracks: any; uid: string }) => {
                 <DialogContent>
                     <DialogContentText id="alert-dialog-slide-description">
                         {`Are you sure you want to delete 
-                ${selectedId}`}
+                ${deleteId}`}
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
@@ -187,7 +195,7 @@ const TrackCollection = (props: { tracks: any; uid: string }) => {
                     </Button>
                     <Button
                         onClick={() => {
-                            deleteTrack(selectedId);
+                            deleteTrack(deleteId);
                             handleDialogClose();
                             handleSnackbarOpen();
                         }}
