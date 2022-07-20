@@ -48,6 +48,8 @@ export const AudioPlayer = (props: {
     comments: (AudioComment | TaskComment)[];
     uid: string;
     tid: string;
+    setTrackLoading: (loading: boolean) => void;
+    trackLoading: boolean;
     updateComments: (comment: (AudioComment | TaskComment)[]) => void;
 }) => {
     // let [isPlaying, setIsPlaying] = useState(false);
@@ -59,7 +61,6 @@ export const AudioPlayer = (props: {
     const [volume, setVolume] = useState<number>(50);
     const [isMuted, setIsMuted] = useState(false);
     const [isLooping, setIsLooping] = useState(false);
-    const [isLoading, setisLoading] = useState(false);
 
     const handleChange = (event: Event, newValue: number | number[]) => {
         const outputVol = isMuted ? 0 : newValue;
@@ -103,11 +104,11 @@ export const AudioPlayer = (props: {
 
             wsInstance.on("ready", () => {
                 setTrackLength(wsInstance.getDuration());
-                setisLoading(false);
+                props.setTrackLoading(false);
             });
 
             wsInstance.on("loading", () => {
-                setisLoading(true);
+                props.setTrackLoading(true);
             });
 
             wsInstance.on("audioprocess", () => {
@@ -134,11 +135,11 @@ export const AudioPlayer = (props: {
 
         ws?.on("ready", () => {
             setTrackLength(ws?.getDuration());
-            setisLoading(false);
+            props.setTrackLoading(false);
         });
 
         ws?.on("loading", () => {
-            setisLoading(true);
+            props.setTrackLoading(true);
         });
 
         ws?.on("audioprocess", () => {
@@ -164,11 +165,11 @@ export const AudioPlayer = (props: {
                         : theme.palette.primary.main,
             });
         });
-    }, [props.comments]);
+    }, [props.comments, props.audioFile]);
 
     useEffect(() => {
         if (props.audioFile === undefined) {
-            return;
+            ws?.empty();
         } else if (props.audioFile instanceof File) {
             ws?.loadBlob(props.audioFile);
         } else {
@@ -191,7 +192,7 @@ export const AudioPlayer = (props: {
 
     return (
         <>
-            {isLoading ? (
+            {props.trackLoading ? (
                 <Stack
                     direction="row"
                     spacing={2}

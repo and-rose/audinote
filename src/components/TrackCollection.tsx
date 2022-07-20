@@ -36,6 +36,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import InfoIcon from "@mui/icons-material/Info";
 import { TransitionProps } from "@mui/material/transitions";
 import { FileUploadZone } from "./FileUploadZone";
+import { ExecFileSyncOptionsWithBufferEncoding } from "child_process";
 
 function CircularProgressWithLabel(
     props: CircularProgressProps & { value: number }
@@ -119,11 +120,12 @@ const TrackCollection = (props: {
     const handleListItemClick = (
         event: React.MouseEvent<HTMLDivElement, MouseEvent>,
         index: number,
-        id: string
+        id: string,
+        title: string
     ) => {
         setSelectedIndex(index);
         setSelectedId(id);
-        props.loadTrackFromStorage(selectedId, "forgetmetoo.mp3");
+        props.loadTrackFromStorage(selectedId, title);
     };
 
     return (
@@ -237,7 +239,8 @@ const TrackListItem = (props: {
     handleSelectFunc: (
         event: React.MouseEvent<HTMLDivElement, MouseEvent>,
         index: number,
-        id: string
+        id: string,
+        trackName: string
     ) => void;
     openDeleteDialog: (targetId: string) => void;
 }) => {
@@ -348,7 +351,8 @@ const TrackListItem = (props: {
                         props.handleSelectFunc(
                             event,
                             props.index,
-                            props.track.tid
+                            props.track.tid,
+                            props.track.title
                         )
                     }
                 >

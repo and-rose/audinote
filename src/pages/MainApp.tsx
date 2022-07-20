@@ -29,6 +29,7 @@ const App = () => {
     const storage = getStorage();
     const [audioFile, setAudioFile] = useState<File | string>();
     const [commentLoading, setCommentLoading] = useState(false);
+    const [trackLoading, setTrackLoading] = useState(false);
     const [uid, setUid] = useState<string>(auth.currentUser?.uid ?? "");
     const [tid, setTid] = useState<string>();
     const [tracks, setTracks] = useState<any>([]);
@@ -41,7 +42,6 @@ const App = () => {
             collection(db, "user-tracks", uid, "tracks"),
             where("title", "==", name)
         );
-        console.log(audioFile);
         getDocs(q)
             .then((response) => {
                 if (response.docs.length > 0) {
@@ -64,16 +64,20 @@ const App = () => {
     }
 
     function loadTrackFromStorage(tid: string, trackName: string) {
+        setAudioFile(undefined);
         console.log(`attempting ${uid}/${tid}/${trackName}`);
         const pathReference = ref(storage, `${uid}/${tid}/${trackName}`);
+        setTrackLoading(true);
         getBlob(pathReference)
             .then((url) => {
+                setTrackLoading(false);
                 console.log(url);
                 const file = new File([url], trackName);
                 setAudioFile(file);
                 findTrackId(trackName);
             })
             .catch((error) => {
+                setTrackLoading(false);
                 console.log(error.message);
             });
     }
@@ -194,6 +198,8 @@ const App = () => {
                             comments={audioComments}
                             uid={uid}
                             tid={tid!}
+                            setTrackLoading={setTrackLoading}
+                            trackLoading={trackLoading}
                             updateComments={setAudioComments}
                         />
                     </Paper>
