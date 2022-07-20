@@ -44,7 +44,7 @@ const DynamicVolumeIcon = (props: { volume: number }) => {
 };
 
 export const AudioPlayer = (props: {
-    audioFile: File | undefined;
+    audioFile: File | string | undefined;
     comments: (AudioComment | TaskComment)[];
     uid: string;
     tid: string;
@@ -167,8 +167,12 @@ export const AudioPlayer = (props: {
     }, [props.comments]);
 
     useEffect(() => {
-        if (props.audioFile) {
+        if (props.audioFile === undefined) {
+            return;
+        } else if (props.audioFile instanceof File) {
             ws?.loadBlob(props.audioFile);
+        } else {
+            ws?.load(props.audioFile);
         }
     }, [props.audioFile]);
 
@@ -206,7 +210,7 @@ export const AudioPlayer = (props: {
                 </Stack>
             ) : (
                 <h1>
-                    {props.audioFile?.name
+                    {props.audioFile instanceof File
                         ? props.audioFile?.name
                         : "No File Loaded"}
                 </h1>

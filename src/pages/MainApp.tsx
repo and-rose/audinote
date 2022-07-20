@@ -18,6 +18,7 @@ import { Box, Paper, Stack } from "@mui/material";
 import { db } from "../firebase";
 import { getAuth } from "firebase/auth";
 import TrackCollection from "../components/TrackCollection";
+import { getBlob, getStorage, ref } from "firebase/storage";
 
 const paperStyle = {
     padding: 20,
@@ -25,7 +26,8 @@ const paperStyle = {
 
 const App = () => {
     const auth = getAuth();
-    const [audioFile, setAudioFile] = useState<File>();
+    const storage = getStorage();
+    const [audioFile, setAudioFile] = useState<File | string>();
     const [commentLoading, setCommentLoading] = useState(false);
     const [uid, setUid] = useState<string>(auth.currentUser?.uid ?? "");
     const [tid, setTid] = useState<string>();
@@ -58,6 +60,21 @@ const App = () => {
             .catch((error) => {
                 console.log(error.message);
                 setCommentLoading(false);
+            });
+    }
+
+    function loadTrackFromStorage(tid: string, trackName: string) {
+        console.log(`attempting ${uid}/${tid}/${trackName}`);
+        const pathReference = ref(storage, `${uid}/${tid}/${trackName}`);
+        getBlob(pathReference)
+            .then((url) => {
+                console.log(url);
+                const file = new File([url], trackName);
+                setAudioFile(file);
+                findTrackId(trackName);
+            })
+            .catch((error) => {
+                console.log(error.message);
             });
     }
 
@@ -167,6 +184,7 @@ const App = () => {
                 tracks={tracks}
                 uid={uid}
                 verifyFile={verifyFile}
+                loadTrackFromStorage={loadTrackFromStorage}
             />
             <Box className="App" width={"100%"} m={2}>
                 <Stack spacing={2}>

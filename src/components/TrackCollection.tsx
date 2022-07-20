@@ -88,6 +88,7 @@ const TrackCollection = (props: {
     tracks: any;
     uid: string;
     verifyFile: (file: File) => void;
+    loadTrackFromStorage: (tid: string, trackName: string) => void;
 }) => {
     const auth = getAuth();
     const [selectedIndex, setSelectedIndex] = useState(0);
@@ -122,6 +123,7 @@ const TrackCollection = (props: {
     ) => {
         setSelectedIndex(index);
         setSelectedId(id);
+        props.loadTrackFromStorage(selectedId, "forgetmetoo.mp3");
     };
 
     return (
