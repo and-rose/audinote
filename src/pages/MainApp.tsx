@@ -8,17 +8,16 @@ import {
     getDocs,
     onSnapshot,
     query,
-    setDoc,
-    doc,
     where,
     addDoc,
 } from "firebase/firestore";
 import { AudioComment, TaskComment } from "../Helpers";
-import { Box, Paper, Stack } from "@mui/material";
+import { Box, Paper, Stack, Toolbar } from "@mui/material";
 import { db } from "../firebase";
 import { getAuth } from "firebase/auth";
 import TrackCollection from "../components/TrackCollection";
 import { getBlob, getStorage, ref } from "firebase/storage";
+import NavBar from "../components/NavBar";
 
 const paperStyle = {
     padding: 20,
@@ -160,7 +159,7 @@ const App = () => {
 
     useEffect(() => {
         let unsubRef = () => {};
-        if (uid == undefined || uid !== null) {
+        if (uid === undefined || uid !== null) {
             getUserTracks();
             unsubRef = onSnapshot(
                 collection(db, "user-tracks", uid, "tracks"),
@@ -178,41 +177,45 @@ const App = () => {
     }, [uid]);
 
     return (
-        <Box
-            sx={{
-                display: "flex",
-                height: "calc(100vh - 69px)",
-            }}
-        >
-            <TrackCollection
-                tracks={tracks}
-                uid={uid}
-                verifyFile={verifyFile}
-                loadTrackFromStorage={loadTrackFromStorage}
-            />
-            <Box className="App" width={"100%"} m={2}>
-                <Stack spacing={2}>
-                    <Paper elevation={2} style={paperStyle}>
-                        <AudioPlayer
-                            audioFile={audioFile}
+        <FileUploadZone newFileFound={(f: File) => verifyFile(f)}>
+            <NavBar />
+            <Box
+                sx={{
+                    display: "flex",
+                    height: "calc(100vh - 69px)",
+                }}
+            >
+                <TrackCollection
+                    tracks={tracks}
+                    uid={uid}
+                    verifyFile={verifyFile}
+                    loadTrackFromStorage={loadTrackFromStorage}
+                />
+                <Box className="App" width={"100%"} m={2}>
+                    <Toolbar />
+                    <Stack spacing={2}>
+                        <Paper elevation={2} style={paperStyle}>
+                            <AudioPlayer
+                                audioFile={audioFile}
+                                comments={audioComments}
+                                uid={uid}
+                                tid={tid!}
+                                setTrackLoading={setTrackLoading}
+                                trackLoading={trackLoading}
+                                updateComments={setAudioComments}
+                            />
+                        </Paper>
+                        <AudioCommentList
                             comments={audioComments}
-                            uid={uid}
-                            tid={tid!}
-                            setTrackLoading={setTrackLoading}
-                            trackLoading={trackLoading}
                             updateComments={setAudioComments}
+                            commentLoading={commentLoading}
+                            tid={tid!}
+                            uid={uid}
                         />
-                    </Paper>
-                    <AudioCommentList
-                        comments={audioComments}
-                        updateComments={setAudioComments}
-                        commentLoading={commentLoading}
-                        tid={tid!}
-                        uid={uid}
-                    />
-                </Stack>
+                    </Stack>
+                </Box>
             </Box>
-        </Box>
+        </FileUploadZone>
     );
 };
 

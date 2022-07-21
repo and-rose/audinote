@@ -16,13 +16,15 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import LogoutIcon from "@mui/icons-material/Logout";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import InventoryIcon from "@mui/icons-material/Inventory";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 const pages = ["Home", "Help"];
 
-const ResponsiveAppBar = (props: { currentUser: User | null | undefined }) => {
+const ResponsiveAppBar = () => {
     const navigate = useNavigate();
     const auth = getAuth();
+    const [user, loading] = useAuthState(auth);
+
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -36,7 +38,7 @@ const ResponsiveAppBar = (props: { currentUser: User | null | undefined }) => {
     return (
         <>
             <AppBar
-                position="sticky"
+                position="fixed"
                 sx={{
                     zIndex: (theme) => theme.zIndex.drawer + 1,
                     height: 69,
@@ -58,12 +60,12 @@ const ResponsiveAppBar = (props: { currentUser: User | null | undefined }) => {
                                 letterSpacing: ".3rem",
                                 color: "inherit",
                                 textDecoration: "none",
-                                flexGrow: props.currentUser ? 0 : 1,
+                                flexGrow: user ? 0 : 1,
                             }}
                         >
                             Audinote
                         </Typography>
-                        {props.currentUser ? (
+                        {user ? (
                             <Box
                                 sx={{
                                     flexGrow: 1,
@@ -85,7 +87,7 @@ const ResponsiveAppBar = (props: { currentUser: User | null | undefined }) => {
                                 ))}
                             </Box>
                         ) : null}
-                        {props.currentUser ? (
+                        {user ? (
                             <Box sx={{ flexGrow: 0 }}>
                                 <Tooltip title="Account settings">
                                     <IconButton
@@ -93,10 +95,7 @@ const ResponsiveAppBar = (props: { currentUser: User | null | undefined }) => {
                                         onClick={handleClick}
                                     >
                                         <StringAvatar
-                                            emailName={
-                                                props.currentUser.displayName ??
-                                                ""
-                                            }
+                                            emailName={user?.displayName ?? ""}
                                         />
                                     </IconButton>
                                 </Tooltip>

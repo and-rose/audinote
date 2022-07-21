@@ -35,8 +35,6 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import DeleteIcon from "@mui/icons-material/Delete";
 import InfoIcon from "@mui/icons-material/Info";
 import { TransitionProps } from "@mui/material/transitions";
-import { FileUploadZone } from "./FileUploadZone";
-import { ExecFileSyncOptionsWithBufferEncoding } from "child_process";
 
 function CircularProgressWithLabel(
     props: CircularProgressProps & { value: number }
@@ -93,6 +91,7 @@ const TrackCollection = (props: {
 }) => {
     const auth = getAuth();
     const [selectedIndex, setSelectedIndex] = useState(0);
+    const [selectedTitle, setSelectedTitle] = useState("");
     const [selectedId, setSelectedId] = useState("");
     const [deleteId, setDeleteId] = useState("");
     const [dialogOpen, setDialogOpen] = useState(false);
@@ -123,10 +122,14 @@ const TrackCollection = (props: {
         id: string,
         title: string
     ) => {
+        setSelectedTitle(title);
         setSelectedIndex(index);
         setSelectedId(id);
-        props.loadTrackFromStorage(selectedId, title);
     };
+
+    useEffect(() => {
+        props.loadTrackFromStorage(selectedId, selectedTitle);
+    }, [selectedId]);
 
     return (
         <>
@@ -164,20 +167,19 @@ const TrackCollection = (props: {
                     </div>
                 </DrawerHeader>
                 <Divider />
-                <FileUploadZone newFileFound={(f: File) => props.verifyFile(f)}>
-                    <List>
-                        {props.tracks.map((track, index) => (
-                            <TrackListItem
-                                track={track}
-                                uid={props.uid}
-                                index={index}
-                                selected={selectedIndex === index}
-                                handleSelectFunc={handleListItemClick}
-                                openDeleteDialog={openDeleteDialog}
-                            />
-                        ))}
-                    </List>
-                </FileUploadZone>
+
+                <List>
+                    {props.tracks.map((track, index) => (
+                        <TrackListItem
+                            track={track}
+                            uid={props.uid}
+                            index={index}
+                            selected={selectedIndex === index}
+                            handleSelectFunc={handleListItemClick}
+                            openDeleteDialog={openDeleteDialog}
+                        />
+                    ))}
+                </List>
             </Drawer>
             <Dialog
                 open={dialogOpen}

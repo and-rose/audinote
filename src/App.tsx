@@ -60,7 +60,6 @@ function App() {
                             element={
                                 <ProtectedRoute user={user}>
                                     <CssBaseline />
-                                    <NavBar currentUser={user} />
                                     <Home />
                                 </ProtectedRoute>
                             }
@@ -70,7 +69,6 @@ function App() {
                             element={
                                 <ProtectedRoute user={user}>
                                     <CssBaseline />
-                                    <NavBar currentUser={user} />
                                     <Home />
                                 </ProtectedRoute>
                             }
@@ -84,7 +82,7 @@ function App() {
                             element={
                                 <>
                                     <CssBaseline />
-                                    <NavBar currentUser={user} />
+                                    <NavBar />
                                     <Login />
                                 </>
                             }
@@ -94,7 +92,7 @@ function App() {
                             element={
                                 <>
                                     <CssBaseline />
-                                    <NavBar currentUser={user} />
+                                    <NavBar />
                                     <Register />
                                 </>
                             }

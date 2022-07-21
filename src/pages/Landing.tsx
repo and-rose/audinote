@@ -11,7 +11,7 @@ const Landing = (props: { user: User | null | undefined }) => {
     return (
         <Box display="flex">
             <Box
-                sx={{ width: "70vw", height: "100vh", bgcolor: "primary.main" }}
+                sx={{ flex: 2, height: "100vh", bgcolor: "primary.main" }}
                 display="flex"
                 alignItems="center"
                 justifyContent="center"
@@ -37,7 +37,7 @@ const Landing = (props: { user: User | null | undefined }) => {
             </Box>
             <Box
                 sx={{
-                    width: "30vw",
+                    flex: 1,
                     height: "100vh",
                 }}
                 display="flex"

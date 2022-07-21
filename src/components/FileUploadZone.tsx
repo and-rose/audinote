@@ -1,4 +1,4 @@
-import { useTheme } from "@mui/material";
+import { Backdrop, Box, useTheme } from "@mui/material";
 import React, { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import "./FileUploadZone.sass";
@@ -24,41 +24,39 @@ export const FileUploadZone = (props: {
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop,
+        noClick: true,
         maxFiles: 1,
         accept: {
             "audio/example": [".mp3", ".wav"],
         },
     });
     return (
-        <section>
-            <div
-                {...getRootProps()}
-                style={{
-                    position: "relative",
-                    width: "100%",
-                }}
-            >
-                {isDragActive ? (
-                    <div
+        <div {...getRootProps()}>
+            {isDragActive ? (
+                <Backdrop
+                    sx={{
+                        color: "#000000",
+                        zIndex: (theme) => theme.zIndex.drawer + 2,
+                    }}
+                    open={true}
+                >
+                    <Box
                         className="filedropzone"
                         style={{
                             display: "flex",
-                            position: "absolute",
-                            zIndex: 10,
-                            opacity: 0.9,
-                            justifyContent: "center",
-                            verticalAlign: "middle",
-                            backgroundColor: theme.palette.grey[300],
+                            position: "fixed",
+                            opacity: 1,
+                            backgroundColor: theme.palette.background.default,
                             outlineColor: theme.palette.grey[400],
                             color: theme.palette.grey[700],
                         }}
                     >
                         <input {...getInputProps()} />
-                        <p>Drop any audio file here!</p>
-                    </div>
-                ) : null}
-                {props.children}
-            </div>
-        </section>
+                        <h2>Drop any audio file here!</h2>
+                    </Box>
+                </Backdrop>
+            ) : null}
+            {props.children}
+        </div>
     );
 };
