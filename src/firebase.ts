@@ -4,13 +4,15 @@ import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
-    apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-    authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-    projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
-    storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: process.env.REACT_APP_FIREBASE_SENDER_ID,
-    appId: process.env.REACT_APP_FIREBASE_APP_ID,
-};
+    apiKey: "AIzaSyBlGHxBcMHmZi6R3qbAe5HKbZ5kSuuyuvY",
+    authDomain: "audinote-178ed.firebaseapp.com",
+    databaseURL: "https://audinote-178ed-default-rtdb.firebaseio.com",
+    projectId: "audinote-178ed",
+    storageBucket: "audinote-178ed.appspot.com",
+    messagingSenderId: "212892198362",
+    appId: "1:212892198362:web:b55a2b8d450701ee7f8ce3",
+    measurementId: "G-JX8LVZ7FWF"
+  };
 
 // Use this to initialize the firebase App
 const firebaseApp = firebase.initializeApp(firebaseConfig);

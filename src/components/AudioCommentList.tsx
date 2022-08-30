@@ -182,7 +182,6 @@ export const AudioCommentList = (props: {
                 className="commentsWrapper"
                 maxWidth={false}
                 sx={{
-                    height: "42vh",
                     overflowY: "scroll",
                 }}
             >

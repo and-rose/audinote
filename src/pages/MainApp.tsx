@@ -10,13 +10,14 @@ import {
     query,
     where,
     addDoc,
+    snapshotEqual,
 } from "firebase/firestore";
 import { AudioComment, TaskComment } from "../Helpers";
 import { Box, Paper, Stack, Toolbar } from "@mui/material";
 import { db } from "../firebase";
 import { getAuth } from "firebase/auth";
 import TrackCollection from "../components/TrackCollection";
-import { getBlob, getStorage, ref } from "firebase/storage";
+import { getBlob, getStorage, ref, uploadBytes } from "firebase/storage";
 import NavBar from "../components/NavBar";
 
 const paperStyle = {
@@ -80,6 +81,14 @@ const App = () => {
                 console.log(error.message);
             });
     }
+
+    function submitTrackToStorage(tid: string, trackName: string, file: File) {
+        const pathReference = ref(storage, `${uid}/${tid}/${trackName}`);
+
+        uploadBytes(pathReference, file).then(snapshot => {
+            setTrackLoading(false);
+    } );
+}
 
     function getUserTracks() {
         const q = collection(db, "user-tracks", uid, "tracks");
@@ -182,7 +191,7 @@ const App = () => {
             <Box
                 sx={{
                     display: "flex",
-                    height: "calc(100vh - 69px)",
+                    height: "calc(100vh - 69px  )",
                 }}
             >
                 <TrackCollection
